@@ -19,6 +19,102 @@
 
 # Completed Milestones
 
+## Phase 03A — Authentication Foundation ✅
+
+**Completion Date:** 2026-08-08
+**Status:** Complete
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| User schema | `packages/database/src/schema/user.ts` | ✅ |
+| Session schema | `packages/database/src/schema/session.ts` | ✅ |
+| Better Auth configuration | `packages/auth/src/auth-config.ts` | ✅ |
+| Auth service | `apps/api/src/common/modules/auth/auth.service.ts` | ✅ |
+| Auth guard | `apps/api/src/common/modules/auth/auth.guard.ts` | ✅ |
+| Auth middleware | `apps/api/src/common/modules/auth/auth.middleware.ts` | ✅ |
+| Auth controller | `apps/api/src/common/modules/auth/auth.controller.ts` | ✅ |
+| Auth module | `apps/api/src/common/modules/auth/auth.module.ts` | ✅ |
+| AuthUser type | `packages/types/src/auth.ts` | ✅ |
+
+### Authentication API Endpoints
+
+| Endpoint | Purpose | Status |
+|----------|---------|--------|
+| `POST /api/v1/auth/login` | Email/password sign-in | ✅ |
+| `POST /api/v1/auth/logout` | Sign out current user | ✅ |
+| `GET /api/v1/auth/me` | Get current authenticated user | ✅ |
+
+### Security Features
+
+| Feature | Implementation | Status |
+|---------|---------------|--------|
+| HttpOnly cookies | Better Auth config | ✅ |
+| Secure cookies (production) | Better Auth config | ✅ |
+| SameSite=Lax | Better Auth config | ✅ |
+| Password hashing (Scrypt) | Better Auth internal | ✅ |
+| Session expiry (7 days) | Better Auth config | ✅ |
+| Session refresh (1 day) | Better Auth config | ✅ |
+
+### Validation Results
+
+| Check | Result |
+|-------|--------|
+| pnpm build | ✅ Pass (17/17 tasks) |
+| pnpm lint | ✅ Pass (no errors) |
+| pnpm typecheck | ✅ Pass (25/25 tasks) |
+
+### Files Created (9 new files)
+
+| File | Purpose |
+|------|---------|
+| `packages/database/src/schema/user.ts` | User table schema |
+| `packages/database/src/schema/session.ts` | Session table schema |
+| `packages/auth/src/auth-config.ts` | Better Auth configuration |
+| `apps/api/src/common/modules/auth/auth.service.ts` | Auth service |
+| `apps/api/src/common/modules/auth/auth.guard.ts` | Route guard |
+| `apps/api/src/common/modules/auth/auth.middleware.ts` | Request middleware |
+| `apps/api/src/common/modules/auth/auth.controller.ts` | API endpoints |
+| `apps/api/src/common/modules/auth/auth.module.ts` | NestJS module |
+| `apps/api/src/common/modules/auth/index.ts` | Barrel export |
+
+### Files Modified (10 files)
+
+| File | Changes |
+|------|---------|
+| `packages/database/src/schema/index.ts` | Added user/session exports |
+| `packages/database/src/index.ts` | Added user/session exports |
+| `packages/auth/package.json` | Added dependencies |
+| `packages/auth/src/index.ts` | Added auth instance export |
+| `packages/types/src/auth.ts` | Added AuthUser type |
+| `packages/types/src/index.ts` | Added AuthUser export |
+| `apps/api/src/app.module.ts` | Imported AuthModule |
+| `apps/api/src/main.ts` | Added Swagger auth tag |
+| `apps/api/package.json` | Added better-auth dependency |
+| `biome.json` | Added unsafeParameterDecoratorsEnabled |
+
+### Issues Encountered
+
+1. **Better Auth API Signature:** Initial implementation assumed `signInEmail` accepts `{ email, password }` directly. Better Auth expects `{ body: { email, password } }` format due to its `StrictEndpoint` type system.
+
+2. **Type Inference:** `AuthUser` type not exported from `@loom/types`. Added `AuthUser` interface to `packages/types/src/auth.ts` and exported it.
+
+3. **Import Ordering:** Biome enforced strict import ordering with type imports first. Reordered imports to match Biome's expectations.
+
+4. **Formatting:** Biome enforced specific formatting rules (trailing commas, arrow functions). Updated code to match Biome's formatting preferences.
+
+### Lessons Learned
+
+1. Better Auth API uses `better-call` which expects `{ body: {...} }` format for POST endpoints, not direct object spreading.
+2. Always export domain-specific types (like `AuthUser`) to maintain type safety across packages.
+3. Biome enforces strict import ordering - type imports should come before value imports alphabetically.
+4. Middleware is for optional context attachment (non-blocking), Guards are for route protection (blocking).
+5. Use typed interfaces instead of `any` when augmenting Express Request objects.
+
+---
+
 ## Phase 2B — Request Infrastructure & Documentation ✅
 
 **Completion Date:** 2026-08-08
@@ -287,19 +383,19 @@
 
 # Upcoming Milestones
 
-## Phase 3 — Core Backend
+## Phase 03B — Authorization & User Management
 
 **Status:** Ready to Start
 **Estimated Effort:** High
-**Dependencies:** Phase 2
+**Dependencies:** Phase 03A
 
 ### Tasks
-- [ ] Authentication (Better Auth)
-- [ ] Authorization (RBAC)
-- [ ] User system
-- [ ] Tenant system
-- [ ] Permissions
-- [ ] Middleware
+- [ ] RBAC (Role-Based Access Control)
+- [ ] User registration endpoint
+- [ ] User profile management
+- [ ] Password reset flow
+- [ ] Email verification
+- [ ] Tenant middleware
 
 ---
 
@@ -314,9 +410,11 @@
             ↓
 2026-08-08  Phase 2A — Core Infrastructure ✅
             ↓
-            Phase 2B — Infrastructure (Remaining) 🟡 Ready
+2026-08-08  Phase 2B — Request Infrastructure & Documentation ✅
             ↓
-            Phase 3 — Core Backend ⏳ Pending
+2026-08-08  Phase 03A — Authentication Foundation ✅
+            ↓
+            Phase 03B — Authorization & User Management 🟡 Ready
             ↓
             ... (Phases 4-22)
             ↓
@@ -330,12 +428,12 @@
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 3 (Phase 0, Phase 1, Phase 2A) |
+| Completed | 4 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 19 |
-| Overall Progress | 15% |
-| Current Phase | Phase 2B |
+| Pending | 18 |
+| Overall Progress | 18% |
+| Current Phase | Phase 03B |
 | Readiness Score | 92/100 |
 
 ---
@@ -348,6 +446,8 @@
 | 2026-08-07 | Architecture Review | Completed | Architecture frozen (v1.0) |
 | 2026-08-07 | Phase 1 | Completed | Repository bootstrapped |
 | 2026-08-08 | Phase 2A | Completed | Core infrastructure wired |
+| 2026-08-08 | Phase 2B | Completed | Request infrastructure & documentation |
+| 2026-08-08 | Phase 03A | Completed | Authentication foundation |
 
 ---
 

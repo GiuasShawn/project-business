@@ -31,6 +31,7 @@ async function bootstrap(): Promise<void> {
     .setDescription('Multi-tenant fashion commerce platform API')
     .setVersion('0.1.0')
     .addBearerAuth()
+    .addTag('auth', 'Authentication')
     .addTag('health', 'Health checks')
     .build()
 

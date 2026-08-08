@@ -16,38 +16,37 @@
 
 **Current Phase**
 
-> Phase 2 — Infrastructure
+> Phase 3A — Authentication Foundation
 
 **Overall Progress**
 
-> 20%
+> 22%
 
 **Status**
 
-> ✅ Phase 2 Complete — Ready for Phase 3
+> ✅ Phase 3A Complete — Ready for Phase 3B
 
 **Current Milestone**
 
-> Infrastructure Complete
+> Authentication Foundation Complete
 
 ---
 
 # Current Objective
 
-Phase 2 is complete. Core infrastructure (database, Redis, config, health checks) and request-level infrastructure (correlation IDs, logging, error contract, Swagger) are all in place.
+Phase 3A is complete. Authentication foundation with Better Auth, sessions, login/logout/me endpoints, auth middleware, and password security are all in place.
 
 ---
 
 # Current Tasks
 
-## Phase 3 — Core Backend
+## Phase 3B — Core Backend (Remaining)
 
-- [ ] Authentication (Better Auth)
-- [ ] Authorization (RBAC)
-- [ ] User system
+- [ ] Authorization (RBAC guards)
+- [ ] User system (registration, profile management)
 - [ ] Tenant system
 - [ ] Permissions
-- [ ] Middleware
+- [ ] Tenant middleware
 
 ---
 
