@@ -18,7 +18,7 @@ import { RequirePermissions } from '../auth/auth.decorators.js'
 import { AuthGuard } from '../auth/auth.guard.js'
 import { PermissionsGuard } from '../auth/permissions.guard.js'
 import { TenantGuard } from './tenant.guard.js'
-import type { TenantService } from './tenant.service.js'
+import { TenantService } from './tenant.service.js'
 
 /**
  * Tenant management controller.

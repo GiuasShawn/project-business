@@ -1,14 +1,24 @@
 /**
  * Centralized role definitions for Project Loom.
  *
- * Roles are defined once and used across the entire application.
- * Do not add roles here without documented architecture approval.
+ * V1 application roles are exactly three (per ADR-014):
+ *   - ADMIN
+ *   - SELLER
+ *   - CUSTOMER
+ *
+ * `SUPER_ADMIN` exists in the database `user_role` enum (per DB-004) but is
+ * NOT activated in V1 RBAC. It is intentionally omitted from this enum.
+ *
+ * Canonical UPPERCASE values per ADR-013.
+ *
+ * @see docs/adr/ADR-013-Database-Enum-Case-Convention.md
+ * @see docs/adr/ADR-014-V1-User-Roles.md
  */
 
 export const Role = {
-  ADMIN: 'admin',
-  SELLER: 'seller',
-  CUSTOMER: 'customer',
+  ADMIN: 'ADMIN',
+  SELLER: 'SELLER',
+  CUSTOMER: 'CUSTOMER',
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]

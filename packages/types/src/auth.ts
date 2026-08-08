@@ -1,4 +1,13 @@
-export type UserRole = 'admin' | 'seller' | 'customer'
+/**
+ * V1 application role set (per ADR-014).
+ *
+ * The DB `user_role` enum also contains `SUPER_ADMIN` (per DB-004), but V1
+ * application RBAC only recognizes the three application roles below.
+ * `SUPER_ADMIN` is reserved as a database value and is not activatable in V1.
+ *
+ * @see docs/adr/ADR-014-V1-User-Roles.md
+ */
+export type UserRole = 'CUSTOMER' | 'SELLER' | 'ADMIN'
 
 export interface AuthUser {
   id: string

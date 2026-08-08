@@ -1,7 +1,7 @@
 import type { AuthUser } from '@loom/types'
 import { Injectable, type NestMiddleware } from '@nestjs/common'
 import type { NextFunction, Request, Response } from 'express'
-import type { AuthService } from './auth.service.js'
+import { AuthService } from './auth.service.js'
 
 interface AuthenticatedRequest extends Request {
   authUser?: AuthUser

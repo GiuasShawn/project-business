@@ -23,7 +23,7 @@ function generateId(prefix) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
 }
 
-function createUser(role = 'seller') {
+function createUser(role = 'SELLER') {
   const id = generateId('user')
   const user = {
     id,
@@ -44,7 +44,7 @@ function createStore(ownerId, slug) {
     id,
     name: `Store ${storeIdCounter++}`,
     slug: slug || `store-${storeIdCounter}`,
-    status: 'active',
+    status: 'ACTIVE',
     ownerId,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -53,7 +53,7 @@ function createStore(ownerId, slug) {
   return store
 }
 
-function createMembership(userId, storeId, role = 'owner') {
+function createMembership(userId, storeId, role = 'OWNER') {
   const id = generateId('membership')
   const membership = {
     id,
@@ -100,12 +100,12 @@ describe('Tenant Isolation Security Tests', () => {
 
   before(() => {
     // Setup: User A owns Store A, User B owns Store B
-    userA = createUser('seller')
-    userB = createUser('seller')
+    userA = createUser('SELLER')
+    userB = createUser('SELLER')
     storeA = createStore(userA.id, 'store-a')
     storeB = createStore(userB.id, 'store-b')
-    createMembership(userA.id, storeA.id, 'owner')
-    createMembership(userB.id, storeB.id, 'owner')
+    createMembership(userA.id, storeA.id, 'OWNER')
+    createMembership(userB.id, storeB.id, 'OWNER')
   })
 
   after(() => {
@@ -119,14 +119,14 @@ describe('Tenant Isolation Security Tests', () => {
       const context = resolveTenantContext(userA.id, storeA.id)
       assert.equal(context.storeId, storeA.id)
       assert.equal(context.membership.userId, userA.id)
-      assert.equal(context.membership.role, 'owner')
+      assert.equal(context.membership.role, 'OWNER')
     })
 
     test('User B can access Store B (owner)', () => {
       const context = resolveTenantContext(userB.id, storeB.id)
       assert.equal(context.storeId, storeB.id)
       assert.equal(context.membership.userId, userB.id)
-      assert.equal(context.membership.role, 'owner')
+      assert.equal(context.membership.role, 'OWNER')
     })
 
     test('User A CANNOT access Store B (cross-tenant)', () => {
@@ -205,9 +205,9 @@ describe('Tenant Isolation Security Tests', () => {
 })
 
 describe('Role-Based Access (Per Architecture)', () => {
-  test('Global roles: admin, seller, customer (documented)', () => {
-    const globalRoles = ['admin', 'seller', 'customer']
-    assert.deepEqual(globalRoles, ['admin', 'seller', 'customer'])
+  test('Global roles: ADMIN, SELLER, CUSTOMER (documented)', () => {
+    const globalRoles = ['ADMIN', 'SELLER', 'CUSTOMER']
+    assert.deepEqual(globalRoles, ['ADMIN', 'SELLER', 'CUSTOMER'])
   })
 
   test('Store membership: single owner per store (Version 1)', () => {
@@ -219,15 +219,15 @@ describe('Role-Based Access (Per Architecture)', () => {
   })
 
   test('Permission matrix uses global roles, not store roles', () => {
-    // Phase 03B permissions: admin, seller, customer
-    // Store membership roles (owner/admin/member) NOT in architecture
+    // Phase 03B permissions: ADMIN, SELLER, CUSTOMER
+    // Store membership roles (OWNER/admin/member) NOT in architecture
     const permissions = {
-      admin: ['system:manage'],
-      seller: ['stores:write', 'products:write'],
-      customer: ['profile:read'],
+      ADMIN: ['system:manage'],
+      SELLER: ['stores:write', 'products:write'],
+      CUSTOMER: ['profile:read'],
     }
-    assert.ok(permissions.admin.includes('system:manage'))
-    assert.ok(permissions.seller.includes('stores:write'))
+    assert.ok(permissions.ADMIN.includes('system:manage'))
+    assert.ok(permissions.SELLER.includes('stores:write'))
   })
 })
 

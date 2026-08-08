@@ -2,7 +2,7 @@ import { user } from '@loom/database'
 import type { AuthUser, UpdateUserProfileDto, UserProfile } from '@loom/types'
 import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { eq } from 'drizzle-orm'
-import type { DatabaseService } from '../database/database.service.js'
+import { DatabaseService } from '../database/database.service.js'
 
 /**
  * User management service.

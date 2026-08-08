@@ -1,14 +1,12 @@
 /**
  * Schema barrel export.
  *
- * All domain schemas will be re-exported from here as they are created.
- * Phase 2A provides the base table and common utilities.
- * Phase 3A adds user and session schemas for authentication.
- * Phase 3B adds role to user schema for authorization.
- * Phase 3C adds store and store_membership schemas for multi-tenancy.
+ * All domain schemas and cross-domain primitives are re-exported from here.
+ * The Phase 04 first migration derives its DDL entirely from this file's
+ * exports.
  */
 
-export { baseTable, createBaseColumns } from './base.js'
+export { baseTable, createBaseColumns, createOptionalAuditColumns } from './base.js'
 export type { BaseTableType } from './base.js'
 
 export { user, userRoleEnum } from './user.js'
@@ -22,3 +20,46 @@ export type { Store, NewStore, StoreSettings, StoreBranding, StoreSeo } from './
 
 export { storeMembership, storeRoleEnum } from './store-membership.js'
 export type { StoreMembership, NewStoreMembership } from './store-membership.js'
+
+// Cross-domain primitives (Phase 04).
+export { account } from './primitives/account.js'
+export type { Account, NewAccount } from './primitives/account.js'
+
+export { verification } from './primitives/verification.js'
+export type { Verification, NewVerification } from './primitives/verification.js'
+
+export { currency, currencyStatusEnum } from './primitives/currencies.js'
+export type { Currency, NewCurrency } from './primitives/currencies.js'
+
+export { address, addressPurposeEnum } from './primitives/addresses.js'
+export type { Address, NewAddress } from './primitives/addresses.js'
+
+export { fileAsset, fileAssetStatusEnum } from './primitives/file-assets.js'
+export type { FileAsset, NewFileAsset } from './primitives/file-assets.js'
+
+export { auditLog, auditActionEnum, auditSeverityEnum } from './primitives/audit-logs.js'
+export type { AuditLog, NewAuditLog } from './primitives/audit-logs.js'
+
+// Platform-wide declared enums (DB-004).
+export {
+  sellerStatusEnum,
+  orderStatusEnum,
+  paymentStatusEnum,
+  returnStatusEnum,
+  commissionStatusEnum,
+  payoutStatusEnum,
+  notificationStatusEnum,
+} from './enums.js'
+
+// Drizzle relational-query relationships.
+export {
+  userRelations,
+  sessionRelations,
+  storeRelations,
+  storeMembershipRelations,
+  accountRelations,
+  verificationRelations,
+  currencyRelations,
+  fileAssetRelations,
+  auditLogRelations,
+} from './relations.js'

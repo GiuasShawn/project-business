@@ -5,7 +5,7 @@ export function createMockStore(overrides: Partial<Store> = {}): Store {
     id: 'test-store-id',
     name: 'Test Store',
     slug: 'test-store',
-    status: 'active',
+    status: 'ACTIVE',
     ownerId: 'test-user-id',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -20,7 +20,7 @@ export function createMockStoreMembership(
     id: 'test-membership-id',
     userId: 'test-user-id',
     storeId: 'test-store-id',
-    role: 'owner' as StoreRole,
+    role: 'OWNER' as StoreRole,
     invitedAt: new Date(),
     acceptedAt: new Date(),
     createdAt: new Date(),
@@ -43,7 +43,7 @@ export function createMockUser(overrides: Record<string, unknown> = {}) {
     id: 'test-user-id',
     email: 'test@example.com',
     name: 'Test User',
-    role: 'admin' as UserRole,
+    role: 'ADMIN' as UserRole,
     ...overrides,
   }
 }

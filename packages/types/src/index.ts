@@ -1,18 +1,26 @@
 export type { UUID, Timestamp, PaginatedResponse, ApiResponse, ErrorResponse } from './common.js'
 export type {
-  UserRole,
   AuthUser,
   AuthenticatedRequest,
-  UserProfile,
+  ChangePasswordDto,
+  LoginDto,
+  RegisterUserDto,
+  RequestEmailVerificationDto,
+  RequestPasswordResetDto,
+  ResetPasswordDto,
+  SellerRegisterDto,
   UpdateUserProfileDto,
+  UserProfile,
+  UserRole,
+  VerifyEmailDto,
 } from './auth.js'
 export type {
-  StoreStatus,
-  StoreRole,
+  CreateStoreDto,
   Store,
   StoreMembership,
-  TenantContext,
-  CreateStoreDto,
-  UpdateStoreDto,
   StoreProfile,
+  StoreRole,
+  StoreStatus,
+  TenantContext,
+  UpdateStoreDto,
 } from './store.js'

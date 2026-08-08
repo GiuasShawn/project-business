@@ -1,55 +1,20 @@
-import { db } from './client.js'
+import { registerDevelopmentSeeds } from './seeds/index.js'
+import { runSeeds } from './seeds/runner.js'
 
 /**
- * Seed runner infrastructure.
+ * Seed runner entrypoint.
  *
- * Each domain registers its own seed function. The runner executes them in order.
- * Usage: pnpm db:seed
- */
-
-export type SeedFn = (
-  db: Awaited<ReturnType<typeof import('./client.js').createDb>>,
-) => Promise<void>
-
-const seedFns: Array<{ name: string; fn: SeedFn }> = []
-
-/**
- * Register a seed function for a domain.
+ * Usage: `pnpm db:seed`
  *
- * @example
- * ```ts
- * registerSeed('users', async (db) => {
- *   await db.insert(users).values([{ ... }])
- * })
- * ```
+ * Pre-condition: the Phase 04 first migration has been applied (`pnpm db:migrate`)
+ * against the target database. Running against an unmigrated database will
+ * fail with a table-missing error.
+ *
+ * This CLI registers development seeds only. Production seeding (if any) is
+ * intentionally not provided.
  */
-export function registerSeed(name: string, fn: SeedFn): void {
-  seedFns.push({ name, fn })
-}
 
-/**
- * Run all registered seeds in order.
- */
-export async function runSeeds(): Promise<void> {
-  console.log('🌱 Running database seeds...')
-
-  for (const { name, fn } of seedFns) {
-    console.log(`  → Seeding: ${name}`)
-    try {
-      await fn(db)
-      console.log(`  ✓ ${name} seeded`)
-    } catch (error) {
-      console.error(`  ✗ ${name} failed:`, error)
-      throw error
-    }
-  }
-
-  console.log('🌱 All seeds completed')
-}
-
-/**
- * CLI entry point.
- */
+registerDevelopmentSeeds()
 runSeeds()
   .then(() => {
     process.exit(0)

@@ -2,7 +2,7 @@ import type { AuthUser, StoreMembership } from '@loom/types'
 import { Injectable, type NestMiddleware, NotFoundException } from '@nestjs/common'
 import type { NextFunction, Request, Response } from 'express'
 import { runWithTenantContext } from './tenant-context.js'
-import type { TenantService } from './tenant.service.js'
+import { TenantService } from './tenant.service.js'
 
 interface AuthenticatedRequest extends Request {
   authUser?: AuthUser

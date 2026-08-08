@@ -13,7 +13,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
 import { AuthGuard } from './auth.guard.js'
-import type { AuthService } from './auth.service.js'
+import { AuthService } from './auth.service.js'
 
 @ApiTags('auth')
 @Controller('auth')

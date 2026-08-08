@@ -6,9 +6,9 @@ export interface RBACConfig {
 
 const defaultPermissions: RBACConfig = {
   permissions: {
-    admin: ['*'],
-    seller: ['products:read', 'products:write', 'orders:read', 'analytics:read'],
-    customer: ['orders:read', 'profile:read', 'profile:write'],
+    ADMIN: ['*'],
+    SELLER: ['products:read', 'products:write', 'orders:read', 'analytics:read'],
+    CUSTOMER: ['orders:read', 'profile:read', 'profile:write'],
   },
 }
 

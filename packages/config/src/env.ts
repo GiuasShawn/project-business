@@ -12,7 +12,13 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().url(),
   DATABASE_POOL_SIZE: z.coerce.number().default(10),
-  DATABASE_SSL: z.coerce.boolean().default(false),
+  DATABASE_SSL: z
+    .preprocess((v) => {
+      if (v === 'false' || v === '0' || v === '' || v === false || v === 0) return false
+      if (v === 'true' || v === '1' || v === true || v === 1) return true
+      return false
+    }, z.boolean())
+    .default(false),
   DATABASE_LOGGING: z.coerce.boolean().default(true),
 
   // Redis

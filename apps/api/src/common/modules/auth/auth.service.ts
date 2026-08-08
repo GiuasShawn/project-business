@@ -3,7 +3,7 @@ import { store, storeMembership, user } from '@loom/database'
 import type { AuthUser, UserRole } from '@loom/types'
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import { and, eq } from 'drizzle-orm'
-import type { DatabaseService } from '../database/database.service.js'
+import { DatabaseService } from '../database/database.service.js'
 
 /**
  * Authentication service.
@@ -27,7 +27,7 @@ export class AuthService {
 
       // Get role from user metadata or default to customer
       // Better Auth doesn't have a role field by default, so we use metadata
-      const role = ((session.user as Record<string, unknown>).role as UserRole) ?? 'customer'
+      const role = ((session.user as Record<string, unknown>).role as UserRole) ?? 'CUSTOMER'
 
       return {
         id: session.user.id,
@@ -77,7 +77,7 @@ export class AuthService {
   /**
    * Register a new user.
    */
-  async register(email: string, password: string, name: string, role: UserRole = 'customer') {
+  async register(email: string, password: string, name: string, role: UserRole = 'CUSTOMER') {
     try {
       const result = await authInstance.api.signUpEmail({
         body: {
@@ -88,7 +88,7 @@ export class AuthService {
       })
 
       // Update user role in database after Better Auth creates the user
-      if (result?.user?.id && role !== 'customer') {
+      if (result?.user?.id && role !== 'CUSTOMER') {
         const db = this.databaseService.getDb()
         await db.update(user).set({ role }).where(eq(user.id, result.user.id))
       }
@@ -123,7 +123,7 @@ export class AuthService {
     storeSlug: string,
   ) {
     // First register the user
-    const result = await this.register(email, password, name, 'seller')
+    const result = await this.register(email, password, name, 'SELLER')
 
     if (!result?.user?.id) {
       throw new BadRequestException('Registration failed')
@@ -137,14 +137,14 @@ export class AuthService {
       throw new BadRequestException('Store slug already exists')
     }
 
-    // Create store with status 'created'
+    // Create store with status 'DRAFT' (ADR-015).
     const [newStore] = await db
       .insert(store)
       .values({
         name: storeName,
         slug: storeSlug,
         ownerId: result.user.id,
-        status: 'created',
+        status: 'DRAFT',
       })
       .returning()
 
@@ -152,7 +152,7 @@ export class AuthService {
     await db.insert(storeMembership).values({
       userId: result.user.id,
       storeId: newStore.id,
-      role: 'owner',
+      role: 'OWNER',
       acceptedAt: new Date(),
     })
 
@@ -169,7 +169,7 @@ export class AuthService {
 
   /**
    * Complete seller onboarding after email verification.
-   * Updates store status from 'created' to 'configured'.
+   * Updates store status from 'DRAFT' to 'CONFIGURED'.
    */
   async completeSellerOnboarding(userId: string): Promise<void> {
     const db = this.databaseService.getDb()
@@ -178,13 +178,13 @@ export class AuthService {
     const membership = await db
       .select()
       .from(storeMembership)
-      .where(and(eq(storeMembership.userId, userId), eq(storeMembership.role, 'owner')))
+      .where(and(eq(storeMembership.userId, userId), eq(storeMembership.role, 'OWNER')))
       .limit(1)
 
     if (membership.length > 0) {
       await db
         .update(store)
-        .set({ status: 'configured', updatedAt: new Date() })
+        .set({ status: 'CONFIGURED', updatedAt: new Date() })
         .where(eq(store.id, membership[0].storeId))
     }
   }

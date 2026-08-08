@@ -163,7 +163,11 @@ Examples:
 | ADR-010 | TypeScript (Strict) | Accepted |
 | ADR-011 | REST API | Accepted |
 | ADR-012 | Observability | Accepted |
+| ADR-013 | Database Enum Case Convention (UPPERCASE per DB-004) | Accepted |
+| ADR-014 | V1 User Roles (admin/seller/customer) and SUPER_ADMIN Deferral | Accepted |
+| ADR-015 | Store Status Initial State (`DRAFT`) | Accepted |
+| ADR-016 | Better Auth Persistence as Cross-Domain Primitives | Accepted |
 
 ---
 
-*Created on 2026-08-07.*
+*Last updated on 2026-08-09.*

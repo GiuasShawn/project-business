@@ -1,4 +1,5 @@
-import { timestamp, uuid } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
+import { index, integer, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 /**
  * Common columns applied to every table.
@@ -6,6 +7,13 @@ import { timestamp, uuid } from 'drizzle-orm/pg-core'
  * Convention:
  *  - UUID primary key (gen_random_uuid default at DB level)
  *  - created_at / updated_at in UTC
+ *
+ * Optional audit columns are exposed as a separate spread helper so domain
+ * tables opt-in case-by-case (see docs/database/Database-Package.md DB-003
+ * "Where applicable"). They are NOT included in the baseline `createBaseColumns()`
+ * because most tables do not need them in V1.
+ *
+ * @see docs/database/Database-Package.md DB-003
  */
 
 export function createBaseColumns() {
@@ -17,6 +25,32 @@ export function createBaseColumns() {
 }
 
 /**
+ * Optional audit columns (DB-003 §"Where applicable").
+ *
+ * Apply via spread: `{ ...createBaseColumns(), ...createOptionalAuditColumns() }`.
+ *
+ * These columns support:
+ *  - `deleted_at` — soft-delete marker (recorded as a structured time stamp).
+ *  - `created_by` / `updated_by` / `deleted_by` — actor reference. Phase 04
+ *    uses `text` to allow either a `users.id` UUID or a system marker
+ *    (`'system'`, `'migration'`).
+ *  - `version` — optimistic locking counter (Database-Philosophy §18).
+ *
+ * They are exposed as a helper so a domain table can opt-in (e.g., Products,
+ * Orders, Reviews will need them in their respective phases; identities and
+ * cross-domain primitives in Phase 04 do not).
+ */
+export function createOptionalAuditColumns() {
+  return {
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+    createdBy: text('created_by'),
+    updatedBy: text('updated_by'),
+    deletedBy: text('deleted_by'),
+    version: integer('version').notNull().default(1),
+  }
+}
+
+/**
  * Re-usable base table reference.
  *
  * Domain schemas extend this via pgTable('table_name', { ...baseTable, ...domainColumns }).
@@ -24,3 +58,9 @@ export function createBaseColumns() {
 export const baseTable = createBaseColumns()
 
 export type BaseTableType = typeof baseTable
+
+/**
+ * Re-export of frequently used Drizzle helpers so consuming files can import
+ * them from a single canonical entry point.
+ */
+export { index, sql, text, timestamp, uuid }

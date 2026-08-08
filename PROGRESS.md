@@ -19,6 +19,120 @@
 
 # Completed Milestones
 
+## Phase 04 — Domain Data Foundation ✅
+
+**Completion Date:** 2026-08-09
+**Status:** Complete (with documented Docker-step environment caveat)
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| ADR-013 — Database Enum Case Convention | `docs/adr/ADR-013-Database-Enum-Case-Convention.md` | ✅ |
+| ADR-014 — V1 User Roles (SUPER_ADMIN deferred) | `docs/adr/ADR-014-V1-User-Roles.md` | ✅ |
+| ADR-015 — store_status initial state `DRAFT` | `docs/adr/ADR-015-Store-Status-Initial-State.md` | ✅ |
+| ADR-016 — Better Auth Persistence as primitives | `docs/adr/ADR-016-Better-Auth-Persistence.md` | ✅ |
+| Normalized `users` schema (UPPERCASE role enum, +3 indexes) | `packages/database/src/schema/user.ts` | ✅ |
+| Normalized `stores` schema (UPPERCASE status enum, `DRAFT` default) | `packages/database/src/schema/store.ts` | ✅ |
+| Normalized `store_memberships` schema (UPPERCASE role enum) | `packages/database/src/schema/store-membership.ts` | ✅ |
+| FK index on `sessions.user_id` + `sessions.expires_at` | `packages/database/src/schema/session.ts` | ✅ |
+| Optional audit column helper (`createOptionalAuditColumns`) | `packages/database/src/schema/base.ts` | ✅ |
+| Cross-domain primitive: `currencies` | `packages/database/src/schema/primitives/currencies.ts` | ✅ |
+| Cross-domain primitive: `addresses` | `packages/database/src/schema/primitives/addresses.ts` | ✅ |
+| Cross-domain primitive: `file_assets` | `packages/database/src/schema/primitives/file-assets.ts` | ✅ |
+| Cross-domain primitive: `audit_logs` | `packages/database/src/schema/primitives/audit-logs.ts` | ✅ |
+| Better Auth primitive: `accounts` | `packages/database/src/schema/primitives/account.ts` | ✅ |
+| Better Auth primitive: `verifications` | `packages/database/src/schema/primitives/verification.ts` | ✅ |
+| DB-004 enums declared ahead of table creation | `packages/database/src/schema/enums.ts` | ✅ |
+| Drizzle relations for existing + primitive tables | `packages/database/src/schema/relations.ts` | ✅ |
+| Drizzle adapter configured with schema map | `packages/auth/src/auth-config.ts` | ✅ |
+| First reproducible Drizzle migration | `packages/database/drizzle/0000_perpetual_madame_masque.sql` | ✅ |
+| Drizzle Kit upgrade to v0.31.4 (was 0.24.2; old version exited with “outdated” error) | `packages/database/package.json` | ✅ |
+| Register-and-run seed runner | `packages/database/src/seeds/runner.ts` | ✅ |
+| Dev identity seed (admin/seller/customer + 1 store + OWNER membership) | `packages/database/src/seeds/dev-identity.ts` | ✅ |
+| Dev currency lookup seed | `packages/database/src/seeds/dev-currencies.ts` | ✅ |
+| Database README runbook + conventions | `packages/database/README.md` | ✅ |
+
+### Phase 04 Tables Owned
+
+10 tables:
+
+- **Existing (Phase 1–3):** users, sessions, stores, store_memberships.
+- **Cross-domain primitives (new):** accounts, verifications, addresses, currencies, file_assets, audit_logs.
+
+### Phase 04 Enums Declared
+
+15 pgEnum families:
+
+- user_role, store_status, store_role, address_purpose, audit_action,
+  audit_severity, currency_status, file_asset_status,
+  seller_status, order_status, payment_status, return_status,
+  commission_status, payout_status, notification_status.
+
+All UPPERCASE per ADR-013.
+
+### Domain Tables Explicitly Deferred
+
+| Domain | Phase |
+|--------|-------|
+| Products / Variants / Categories / Collections / Seller Products | 9 |
+| Inventory (Items, Reservations, Transactions) | 8 |
+| Orders / Order Items / Shipments | 12 |
+| Payments / Transactions / Refunds | 12 |
+| Returns / Return Requests | later |
+| Coupons / Campaigns | later |
+| Wishlists / Carts | later |
+| Reviews | later |
+| Notifications (mail_queue, sms_queue, push) | 14 |
+| Analytics events | 14 |
+| Role/Permission tables | V1 RBAC deferred — application-side matrix governs V1 |
+
+### Validation Results (in-environment, no DB)
+
+| Check | Result |
+|-------|--------|
+| `pnpm install` | ✅ Pass |
+| `pnpm build` | ✅ Pass (17/17 tasks) |
+| `pnpm lint` | ✅ Pass (no errors after `drizzle/meta/**` exclusion) |
+| `pnpm typecheck` | ✅ Pass (26/26 tasks) |
+| Tenant-isolation tests | ✅ 17/17 pass (UPPERCASE values asserted) |
+| Account-lifecycle tests | ✅ 21/21 pass |
+
+### Validation Steps Pending Docker
+
+| Check | Method |
+|-------|--------|
+| Apply migration to clean DB | `pnpm --filter @loom/database db:migrate` after `docker compose up -d postgres` |
+| Verify enums | `psql "$DATABASE_URL" -c '\dT+'` |
+| Verify tables and FKs | `psql "$DATABASE_URL" -c '\d+'` per table |
+| Verify indexes | `psql "$DATABASE_URL" -c '\di+'` |
+| Run dev seed | `pnpm --filter @loom/database db:seed` |
+| Application startup against migrated DB | Boot `apps/api` and hit `/health/ready` |
+
+These steps are reproducible from the runbook in `packages/database/README.md`.
+
+### Issues Encountered
+
+1. **drizzle-kit version.** Phase 1 locked `drizzle-kit@^0.24.0`. Version 0.24 refuses to generate against drizzle-orm 0.45 with a misleading "outdated" error. Upgraded to `^0.31.4` per Better Auth peer range and regenerated.
+2. **`drizzle/meta` formatting noise.** Biome wanted to reformat Drizzle-Kit's auto-generated JSON. Added `**/drizzle/meta/**` and `**/drizzle/*.sql` to `biome.json#files.ignore` so generated migration files are excluded from lint/format.
+3. **Existing `stores_slug_idx` was redundant** with the unique constraint on `slug`. Removed the redundant index.
+4. **Better Auth adapter silently depends on schema map.** Phase 03A configured `drizzleAdapter(db, { provider: 'pg' })` without `schema`. With the adapter's runtime at 1.6.26, the adapter reads `db._.fullSchema` when no `schema` is passed. Since `@loom/database/src/client.ts` previously called `drizzle(client)` without `{ schema }`, the adapter would throw on first auth operation that requires schema lookup. Phase 04 resolves this by passing the schema map to both `drizzle()` and `drizzleAdapter()`.
+5. **Account and verification tables were missing.** Phase 03A reported email/password sign-up "validated," but the runtime would have crashed the moment Better Auth attempted to persist a password hash. Phase 04 declares `accounts` and `verifications` so Better Auth has somewhere to write credential data.
+
+### Lessons Learned
+
+1. **Drizzle Kit version drift is real.** It is worth pinning drizzle-kit to a version compatible with the installed drizzle-orm.
+2. **Schema citations must reference the same column names.** When wiring Better Auth's table layout, every column name must match the runtime's expectations exactly; otherwise `accounts.password` etc. silently land in the wrong column (or the wrong table).
+3. **FK indexes are not auto-created.** Postgres does not add an index on FK columns automatically; declare them in the schema to avoid future hot-spots.
+4. **Idempotent seeds are cleaner than pre-flight checks.** Use `onConflict` to map natural keys; the seed is then safe to run repeatedly.
+
+### Outcome
+
+Phase 04 — Domain Data Foundation complete. The data layer is normalized, the canonical enums are declared, the cross-domain primitives are in place, the first reproducible migration is committed, and the runbook for applying it is documented. Architecture Version 1.0 remains unchanged.
+
+---
+
 ## Phase 03D — Account Lifecycle & Registration ✅
 
 **Completion Date:** 2026-08-09
@@ -450,7 +564,9 @@ Seller Active
             ↓
 2026-08-09  Phase 03D — Account Lifecycle & Registration ✅
             ↓
-            ... (Phases 4-22)
+2026-08-09  Phase 04 — Domain Data Foundation ✅ (env-constrained)
+            ↓
+            ... (Phases 5-22)
             ↓
             Phase 22 — Polish ⏳ Pending
 ```
@@ -462,12 +578,12 @@ Seller Active
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 8 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D) |
+| Completed | 9 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D, Phase 04) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 14 |
-| Overall Progress | 36% |
-| Current Phase | Phase 04 — Database |
+| Pending | 13 |
+| Overall Progress | 41% |
+| Current Phase | Phase 04 — Domain Data Foundation (complete; awaiting dev-env DB verification) |
 | Readiness Score | 92/100 |
 
 ---
@@ -485,6 +601,7 @@ Seller Active
 | 2026-08-08 | Phase 03B | Completed | Authorization & user management |
 | 2026-08-08 | Phase 03C | Completed | Multi-tenancy & tenant context |
 | 2026-08-09 | Phase 03D | Completed | Account lifecycle & registration |
+| 2026-08-09 | Phase 04 | Completed | Domain data foundation; cross-domain primitives; first migration |
 
 ---
 

@@ -9,7 +9,7 @@ import type {
 } from '@loom/types'
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { and, eq } from 'drizzle-orm'
-import type { DatabaseService } from '../database/database.service.js'
+import { DatabaseService } from '../database/database.service.js'
 
 /**
  * Tenant service.
@@ -140,7 +140,7 @@ export class TenantService {
         slug: dto.slug,
         description: dto.description,
         ownerId: authUser.id,
-        status: 'created',
+        status: 'DRAFT',
       })
       .returning()
 
@@ -148,7 +148,7 @@ export class TenantService {
     await db.insert(storeMembership).values({
       userId: authUser.id,
       storeId: newStore.id,
-      role: 'owner',
+      role: 'OWNER',
       acceptedAt: new Date(),
     })
 
@@ -174,7 +174,7 @@ export class TenantService {
     }
 
     // Only owner can update (V1: single owner per store)
-    if (membership.role !== 'owner') {
+    if (membership.role !== 'OWNER') {
       throw new ForbiddenException('Only the store owner can update the store')
     }
 

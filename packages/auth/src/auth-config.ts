@@ -1,10 +1,18 @@
 import { drizzleAdapter } from '@better-auth/drizzle-adapter'
 import { env } from '@loom/config'
-import { db } from '@loom/database'
+import { account, db, session, user, verification } from '@loom/database'
 import { betterAuth } from 'better-auth'
 
 export const authInstance = betterAuth({
-  database: drizzleAdapter(db, { provider: 'pg' }),
+  database: drizzleAdapter(db, {
+    provider: 'pg',
+    schema: {
+      user,
+      session,
+      account,
+      verification,
+    },
+  }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,

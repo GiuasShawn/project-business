@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import type { DatabaseService } from '../database/database.service.js'
-import type { RedisService } from '../redis/redis.service.js'
+import { DatabaseService } from '../database/database.service.js'
+import { RedisService } from '../redis/redis.service.js'
 
 export interface HealthStatus {
   status: 'ok' | 'error'

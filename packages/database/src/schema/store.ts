@@ -5,15 +5,24 @@ import { user } from './user.js'
 /**
  * Store status enum.
  *
- * Lifecycle: created → configured → published → active → suspended → archived
+ * Canonical UPPERCASE values per docs/database/Database-Package.md DB-004.
+ *
+ * Lifecycle: DRAFT → CONFIGURED → PUBLISHED → ACTIVE → SUSPENDED → ARCHIVED.
+ *
+ * The initial state of a brand-new store is `DRAFT` per ADR-015. Phase 03C's
+ * de-facto `created` literal value is normalized to `DRAFT` in this Phase 04
+ * first migration.
+ *
+ * @see docs/adr/ADR-013-Database-Enum-Case-Convention.md
+ * @see docs/adr/ADR-015-Store-Status-Initial-State.md
  */
 export const storeStatusEnum = pgEnum('store_status', [
-  'created',
-  'configured',
-  'published',
-  'active',
-  'suspended',
-  'archived',
+  'DRAFT',
+  'CONFIGURED',
+  'PUBLISHED',
+  'ACTIVE',
+  'SUSPENDED',
+  'ARCHIVED',
 ])
 
 /**
@@ -35,7 +44,7 @@ export const store = pgTable(
     description: text('description'),
     logo: text('logo'),
     banner: text('banner'),
-    status: storeStatusEnum('status').notNull().default('created'),
+    status: storeStatusEnum('status').notNull().default('DRAFT'),
     settings: jsonb('settings').$type<StoreSettings>().default({}),
     branding: jsonb('branding').$type<StoreBranding>().default({}),
     seo: jsonb('seo').$type<StoreSeo>().default({}),
@@ -46,7 +55,9 @@ export const store = pgTable(
   (table) => [
     index('stores_owner_id_idx').on(table.ownerId),
     index('stores_status_idx').on(table.status),
-    index('stores_slug_idx').on(table.slug),
+    // `slug` already gets a unique index via the unique constraint above;
+    // an extra plain index is redundant and intentionally omitted.
+    index('stores_created_at_idx').on(table.createdAt),
   ],
 )
 

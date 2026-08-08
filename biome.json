@@ -27,7 +27,8 @@
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useConst": "error"
+        "useConst": "error",
+        "useImportType": "off"
       }
     }
   },
@@ -47,6 +48,16 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", "build", ".next", "coverage", "*.min.js", "*.min.css"]
+    "ignore": [
+      "node_modules",
+      "dist",
+      "build",
+      ".next",
+      "coverage",
+      "*.min.js",
+      "*.min.css",
+      "**/drizzle/meta/**",
+      "**/drizzle/*.sql"
+    ]
   }
 }

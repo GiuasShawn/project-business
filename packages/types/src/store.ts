@@ -2,18 +2,16 @@
  * Store-related types for multi-tenancy.
  *
  * @see docs/adr/ADR-004-Multi-Tenancy.md
+ * @see docs/adr/ADR-013-Database-Enum-Case-Convention.md
+ * @see docs/adr/ADR-015-Store-Status-Initial-State.md
  */
 
 /**
  * Store status lifecycle.
+ *
+ * Canonical UPPERCASE values per ADR-013. Initial state is `DRAFT` per ADR-015.
  */
-export type StoreStatus =
-  | 'created'
-  | 'configured'
-  | 'published'
-  | 'active'
-  | 'suspended'
-  | 'archived'
+export type StoreStatus = 'DRAFT' | 'CONFIGURED' | 'PUBLISHED' | 'ACTIVE' | 'SUSPENDED' | 'ARCHIVED'
 
 /**
  * Store membership role.
@@ -22,9 +20,9 @@ export type StoreStatus =
  * Store has a single owner. No admin/member roles in V1.
  *
  * @see docs/adr/ADR-004-Multi-Tenancy.md
- * @see docs/product/Product-Data-Model.md
+ * @see docs/product/Product-Data-Model.md (Entity — Store)
  */
-export type StoreRole = 'owner'
+export type StoreRole = 'OWNER'
 
 /**
  * Store entity — tenant boundary.

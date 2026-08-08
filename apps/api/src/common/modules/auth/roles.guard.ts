@@ -6,9 +6,9 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common'
-import type { Reflector } from '@nestjs/core'
+import { Reflector } from '@nestjs/core'
 import { ROLES_KEY } from './auth.decorators.js'
-import type { RbacService } from './rbac.service.js'
+import { RbacService } from './rbac.service.js'
 
 /**
  * Guard that checks if the authenticated user has the required role(s).

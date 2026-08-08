@@ -4,15 +4,18 @@ import { store } from './store.js'
 import { user } from './user.js'
 
 /**
- * Store membership role enum.
+ * Store membership role enum (V1).
  *
  * V1 Architecture: One primary store per seller.
  * Store has a single owner. No admin/member roles in V1.
  *
+ * Canonical UPPERCASE values per ADR-013.
+ *
  * @see docs/adr/ADR-004-Multi-Tenancy.md
+ * @see docs/adr/ADR-013-Database-Enum-Case-Convention.md
  * @see docs/product/Product-Data-Model.md (Entity — Store)
  */
-export const storeRoleEnum = pgEnum('store_role', ['owner'])
+export const storeRoleEnum = pgEnum('store_role', ['OWNER'])
 
 /**
  * Store membership table — User ↔ Store relationship.
@@ -21,7 +24,9 @@ export const storeRoleEnum = pgEnum('store_role', ['owner'])
  * A user can own at most one store (one primary store per seller).
  * A store has exactly one owner.
  *
- * This replaces any implicit tenant membership through user columns.
+ * `@loom/auth` and application services never read this table. Tenant
+ * resolution in `apps/api/src/common/modules/tenant/tenant.service.ts` is the
+ * sole reader.
  *
  * @see docs/adr/ADR-004-Multi-Tenancy.md
  */
@@ -35,7 +40,7 @@ export const storeMembership = pgTable(
     storeId: uuid('store_id')
       .notNull()
       .references(() => store.id, { onDelete: 'cascade' }),
-    role: storeRoleEnum('role').notNull().default('owner'),
+    role: storeRoleEnum('role').notNull().default('OWNER'),
     invitedAt: timestamp('invited_at', { withTimezone: true }),
     acceptedAt: timestamp('accepted_at', { withTimezone: true }),
   },
