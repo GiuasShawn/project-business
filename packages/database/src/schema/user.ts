@@ -1,4 +1,11 @@
-import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+/**
+ * User roles enum.
+ *
+ * Centrally defined roles for the platform.
+ */
+export const userRoleEnum = pgEnum('user_role', ['admin', 'seller', 'customer'])
 
 /**
  * User table — Better Auth compatible.
@@ -8,13 +15,13 @@ import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
  *
  * Better Auth manages password hashing internally via Scrypt.
  */
-
 export const user = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text('image'),
+  role: userRoleEnum('role').notNull().default('customer'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })

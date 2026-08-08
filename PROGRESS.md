@@ -19,6 +19,118 @@
 
 # Completed Milestones
 
+## Phase 03B — Authorization & User Management ✅
+
+**Completion Date:** 2026-08-08
+**Status:** Complete
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| Role definitions | `packages/auth/src/roles.ts` | ✅ |
+| Permission definitions | `packages/auth/src/permissions.ts` | ✅ |
+| Permission matrix | `packages/auth/src/permission-matrix.ts` | ✅ |
+| RBAC service | `apps/api/src/common/modules/auth/rbac.service.ts` | ✅ |
+| Roles guard | `apps/api/src/common/modules/auth/roles.guard.ts` | ✅ |
+| Permissions guard | `apps/api/src/common/modules/auth/permissions.guard.ts` | ✅ |
+| Authorization decorators | `apps/api/src/common/modules/auth/auth.decorators.ts` | ✅ |
+| User management service | `apps/api/src/common/modules/user/user.service.ts` | ✅ |
+| User management controller | `apps/api/src/common/modules/user/user.controller.ts` | ✅ |
+| User management module | `apps/api/src/common/modules/user/user.module.ts` | ✅ |
+| Permission matrix documentation | `docs/spec/permissions/PERMISSION_MATRIX.md` | ✅ |
+
+### Authorization API Endpoints
+
+| Endpoint | Method | Permission | Purpose | Status |
+|----------|--------|------------|---------|--------|
+| `GET /api/v1/users/me` | GET | `profile:read` | Get current user profile | ✅ |
+| `PATCH /api/v1/users/me` | PATCH | `profile:write` | Update current user profile | ✅ |
+
+### Roles Implemented
+
+| Role | Description | Hierarchy |
+|------|-------------|-----------|
+| `admin` | Platform administrator | Highest |
+| `seller` | Store owner | Medium |
+| `customer` | End user | Lowest |
+
+### Permissions Implemented
+
+| Category | Read | Write | Manage |
+|----------|------|-------|--------|
+| Users | ✅ | ✅ | ✅ |
+| Profile | ✅ | ✅ | — |
+| Products | ✅ | ✅ | ✅ |
+| Orders | ✅ | ✅ | ✅ |
+| Stores | ✅ | ✅ | ✅ |
+| Inventory | ✅ | ✅ | ✅ |
+| Analytics | ✅ | — | ✅ |
+| Payments | ✅ | ✅ | ✅ |
+| Settings | ✅ | ✅ | ✅ |
+| System | — | — | ✅ |
+
+### Validation Results
+
+| Check | Result |
+|-------|--------|
+| pnpm build | ✅ Pass (17/17 tasks) |
+| pnpm lint | ✅ Pass (no errors) |
+| pnpm typecheck | ✅ Pass (25/25 tasks) |
+
+### Files Created (13 new files)
+
+| File | Purpose |
+|------|---------|
+| `packages/auth/src/roles.ts` | Central role definitions |
+| `packages/auth/src/permissions.ts` | Central permission definitions |
+| `packages/auth/src/permission-matrix.ts` | Role-to-permission mapping |
+| `apps/api/src/common/modules/auth/rbac.service.ts` | RBAC service |
+| `apps/api/src/common/modules/auth/roles.guard.ts` | Roles guard |
+| `apps/api/src/common/modules/auth/permissions.guard.ts` | Permissions guard |
+| `apps/api/src/common/modules/auth/auth.decorators.ts` | Authorization decorators |
+| `apps/api/src/common/modules/user/user.service.ts` | User management service |
+| `apps/api/src/common/modules/user/user.controller.ts` | User management controller |
+| `apps/api/src/common/modules/user/user.module.ts` | User management module |
+| `apps/api/src/common/modules/user/index.ts` | Barrel export |
+| `docs/spec/permissions/PERMISSION_MATRIX.md` | Permission matrix documentation |
+| `docs/reports/PHASE_03B_REPORT.md` | Completion report |
+
+### Files Modified (11 files)
+
+| File | Changes |
+|------|---------|
+| `packages/auth/src/index.ts` | Added role, permission, and permission matrix exports |
+| `packages/types/src/auth.ts` | Added role to AuthUser, added UserProfile and UpdateUserProfileDto types |
+| `packages/types/src/index.ts` | Added new type exports |
+| `packages/database/src/schema/user.ts` | Added role column with enum |
+| `packages/database/src/schema/index.ts` | Added userRoleEnum export |
+| `packages/database/src/index.ts` | Added userRoleEnum export |
+| `apps/api/src/common/modules/auth/auth.service.ts` | Updated to include role in user data |
+| `apps/api/src/common/modules/auth/auth.module.ts` | Added RBAC service and guards |
+| `apps/api/src/common/modules/auth/index.ts` | Added new exports |
+| `apps/api/src/app.module.ts` | Added UserModule import |
+| `apps/api/src/main.ts` | Added users tag to Swagger |
+
+### Issues Encountered
+
+1. **Better Auth Role Field:** Better Auth's session.user doesn't include a role field by default. Used type casting to access role from user metadata.
+
+2. **Import Ordering:** Biome enforced strict import ordering with type imports before value imports. Reordered all imports to match Biome's expectations.
+
+3. **Reflector Import:** NestJS Reflector should be imported as type when only used for dependency injection to avoid lint warnings.
+
+### Lessons Learned
+
+1. Better Auth doesn't include role in session.user by default — need to extend or cast.
+2. Biome enforces strict import ordering — type imports must come before value imports.
+3. NestJS Reflector should be imported as type when only used for dependency injection.
+4. Authorization decorators should be applied before guards to ensure proper metadata reflection.
+5. Permission checks should be centralized in guards, not scattered throughout controllers.
+
+---
+
 ## Phase 03A — Authentication Foundation ✅
 
 **Completion Date:** 2026-08-08
@@ -383,19 +495,17 @@
 
 # Upcoming Milestones
 
-## Phase 03B — Authorization & User Management
+## Phase 03C — User Registration & Account Management
 
 **Status:** Ready to Start
-**Estimated Effort:** High
-**Dependencies:** Phase 03A
+**Estimated Effort:** Medium
+**Dependencies:** Phase 03B
 
 ### Tasks
-- [ ] RBAC (Role-Based Access Control)
 - [ ] User registration endpoint
-- [ ] User profile management
 - [ ] Password reset flow
 - [ ] Email verification
-- [ ] Tenant middleware
+- [ ] Account settings
 
 ---
 
@@ -414,7 +524,9 @@
             ↓
 2026-08-08  Phase 03A — Authentication Foundation ✅
             ↓
-            Phase 03B — Authorization & User Management 🟡 Ready
+2026-08-08  Phase 03B — Authorization & User Management ✅
+            ↓
+            Phase 03C — User Registration & Account Management 🟡 Ready
             ↓
             ... (Phases 4-22)
             ↓
@@ -428,12 +540,12 @@
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 4 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A) |
+| Completed | 5 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 18 |
-| Overall Progress | 18% |
-| Current Phase | Phase 03B |
+| Pending | 17 |
+| Overall Progress | 27% |
+| Current Phase | Phase 03C |
 | Readiness Score | 92/100 |
 
 ---
@@ -448,6 +560,7 @@
 | 2026-08-08 | Phase 2A | Completed | Core infrastructure wired |
 | 2026-08-08 | Phase 2B | Completed | Request infrastructure & documentation |
 | 2026-08-08 | Phase 03A | Completed | Authentication foundation |
+| 2026-08-08 | Phase 03B | Completed | Authorization & user management |
 
 ---
 

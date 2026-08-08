@@ -32,6 +32,7 @@ async function bootstrap(): Promise<void> {
     .setVersion('0.1.0')
     .addBearerAuth()
     .addTag('auth', 'Authentication')
+    .addTag('users', 'User Management')
     .addTag('health', 'Health checks')
     .build()
 

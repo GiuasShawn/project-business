@@ -6,6 +6,7 @@ import { ConfigModule } from './common/modules/config/config.module.js'
 import { DatabaseModule } from './common/modules/database/database.module.js'
 import { HealthModule } from './common/modules/health/health.module.js'
 import { RedisModule } from './common/modules/redis/redis.module.js'
+import { UserModule } from './common/modules/user/user.module.js'
 
 /**
  * Root application module.
@@ -16,7 +17,7 @@ import { RedisModule } from './common/modules/redis/redis.module.js'
  */
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, HealthModule, RedisModule, AuthModule],
+  imports: [ConfigModule, DatabaseModule, HealthModule, RedisModule, AuthModule, UserModule],
   controllers: [],
   providers: [],
 })

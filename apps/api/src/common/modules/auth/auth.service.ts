@@ -1,7 +1,13 @@
 import { authInstance } from '@loom/auth'
-import type { AuthUser } from '@loom/types'
+import type { AuthUser, UserRole } from '@loom/types'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 
+/**
+ * Authentication service.
+ *
+ * Handles session validation, sign-in, sign-out, and user retrieval.
+ * Works with Better Auth for session management.
+ */
 @Injectable()
 export class AuthService {
   async validateSession(token: string): Promise<AuthUser | null> {
@@ -14,10 +20,15 @@ export class AuthService {
         return null
       }
 
+      // Get role from user metadata or default to customer
+      // Better Auth doesn't have a role field by default, so we use metadata
+      const role = ((session.user as Record<string, unknown>).role as UserRole) ?? 'customer'
+
       return {
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
+        role,
         image: session.user.image,
         emailVerified: session.user.emailVerified,
         createdAt: session.user.createdAt,
