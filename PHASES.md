@@ -148,29 +148,36 @@ Error handling
 
 # Phase 3 — Core Backend
 
-**Status:** Pending
+**Status:** In Progress
 
 **Goal:** Authentication, authorization, users, tenants. Build on existing packages/auth.
 
 **Note:** packages/auth (config + RBAC) already exists. Phase 3 integrates Better Auth, adds user/tenant models, and wires middleware.
 
+**Sub-Phases:**
+
+- Phase 03A — Authentication Foundation ✅
+- Phase 03B — Authorization & User Management ✅
+- Phase 03C — Multi-Tenancy & Tenant Context (Next)
+- Phase 03D — Account Lifecycle & Registration
+
 **Tasks**
 
 Authentication
-- [ ] Better Auth integration
-- [ ] JWT token generation
-- [ ] Refresh token rotation
-- [ ] Session management
+- [x] Better Auth integration
+- [x] JWT token generation
+- [x] Refresh token rotation
+- [x] Session management
 
 Authorization
-- [ ] RBAC guards (build on existing packages/auth)
-- [ ] Permission checking middleware
-- [ ] Role-based route protection
+- [x] RBAC guards (build on existing packages/auth)
+- [x] Permission checking middleware
+- [x] Role-based route protection
 
 User system
 - [ ] User registration
 - [ ] User login
-- [ ] User profile management
+- [x] User profile management
 - [ ] Password hashing
 
 Tenant system
@@ -180,8 +187,8 @@ Tenant system
 
 Middleware
 - [ ] Tenant resolution
-- [ ] Authentication guard
-- [ ] Authorization guard
+- [x] Authentication guard
+- [x] Authorization guard
 - [ ] Request context
 
 **Validation**

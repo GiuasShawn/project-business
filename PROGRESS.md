@@ -495,11 +495,154 @@
 
 # Upcoming Milestones
 
-## Phase 03C — User Registration & Account Management
+## Phase 03D — Account Lifecycle & Registration
 
 **Status:** Ready to Start
 **Estimated Effort:** Medium
-**Dependencies:** Phase 03B
+**Dependencies:** Phase 03C
+
+### Tasks
+- [ ] User registration endpoint
+- [ ] Password reset flow
+- [ ] Email verification
+- [ ] Account settings
+
+---
+
+## Phase 03C — Multi-Tenancy & Tenant Context ✅
+
+**Completion Date:** 2026-08-08
+**Status:** Complete
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| Store (tenant) schema | `packages/database/src/schema/store.ts` | ✅ |
+| Store membership schema | `packages/database/src/schema/store-membership.ts` | ✅ |
+| Store types | `packages/types/src/store.ts` | ✅ |
+| Tenant context (AsyncLocalStorage) | `apps/api/src/common/modules/tenant/tenant-context.ts` | ✅ |
+| Tenant resolution middleware | `apps/api/src/common/modules/tenant/tenant-resolution.middleware.ts` | ✅ |
+| Tenant guard | `apps/api/src/common/modules/tenant/tenant.guard.ts` | ✅ |
+| Tenant service | `apps/api/src/common/modules/tenant/tenant.service.ts` | ✅ |
+| Tenant controller | `apps/api/src/common/modules/tenant/tenant.controller.ts` | ✅ |
+| Tenant module | `apps/api/src/common/modules/tenant/tenant.module.ts` | ✅ |
+| Completion report | `docs/reports/PHASE_03C_REPORT.md` | ✅ |
+
+### Tenant API Endpoints
+
+| Endpoint | Method | Permission | Purpose | Status |
+|----------|--------|------------|---------|--------|
+| `POST /api/v1/stores` | POST | `stores:write` | Create a new store | ✅ |
+| `GET /api/v1/stores/me` | GET | — | Get current user's stores | ✅ |
+| `GET /api/v1/stores/:storeId` | GET | `stores:read` | Get store by ID | ✅ |
+| `PATCH /api/v1/stores/:storeId` | PATCH | `stores:write` | Update store (owner/admin only) | ✅ |
+
+### Store Status Lifecycle
+
+| Status | Description |
+|--------|-------------|
+| `created` | Store created, not yet configured |
+| `configured` | Store configured with branding |
+| `published` | Store published, visible publicly |
+| `active` | Store actively operating |
+| `suspended` | Store suspended (admin action) |
+| `archived` | Store archived, no longer active |
+
+### Store Membership Role (V1 Architecture)
+
+| Role | Description |
+|------|-------------|
+| `owner` | Store creator, full access |
+
+### Security Verification Results (2026-08-08)
+
+| Test | Result |
+|------|--------|
+| User A can access Store A (owner) | ✅ Pass |
+| User A CANNOT access Store B (cross-tenant) | ✅ Pass |
+| User B can access Store B (owner) | ✅ Pass |
+| User B CANNOT access Store A (cross-tenant) | ✅ Pass |
+| Changing X-Store-ID cannot bypass membership | ✅ Pass |
+| Missing tenant context fails safely | ✅ Pass |
+| Tenant context immutable after resolution | ✅ Pass |
+| Unauthenticated requests with X-Store-ID rejected | ✅ Pass |
+| **Total** | **17/17 Pass** |
+
+**Test File:** `apps/api/test/tenant-isolation.test.js` (Node.js built-in test runner, no external dependencies)
+
+### Architecture Discrepancy Resolved (2026-08-08)
+
+- **Previous Issue:** Store membership roles (owner, admin, member) and `TenantGuard.withRoles(['owner','admin'])` were NOT documented in ADR-004 or Product-Data-Model
+- **Architecture Specifies:** "One primary store per seller (Version 1)" — single owner per store
+- **Resolution Applied:** Simplified to V1 architecture — single owner per store
+- Removed undocumented `admin` and `member` store roles
+- Removed `TenantGuard.withRoles()` method
+- Store membership role is now only `owner`
+- All 17 tenant isolation tests pass with V1 model
+
+### Validation Results
+
+| Check | Result |
+|-------|--------|
+| pnpm build | ✅ Pass (17/17 tasks) |
+| pnpm lint | ✅ Pass (no errors) |
+| pnpm typecheck | ✅ Pass (25/25 tasks) |
+| Security verification | ✅ 17/17 tests pass |
+
+### Files Created (12 new files)
+
+| File | Purpose |
+|------|---------|
+| `packages/database/src/schema/store.ts` | Store table schema |
+| `packages/database/src/schema/store-membership.ts` | Store membership schema |
+| `packages/types/src/store.ts` | Store-related types |
+| `apps/api/src/common/modules/tenant/tenant-context.ts` | Tenant context (AsyncLocalStorage) |
+| `apps/api/src/common/modules/tenant/tenant-resolution.middleware.ts` | Tenant resolution middleware |
+| `apps/api/src/common/modules/tenant/tenant.guard.ts` | Tenant guard |
+| `apps/api/src/common/modules/tenant/tenant.service.ts` | Tenant service |
+| `apps/api/src/common/modules/tenant/tenant.controller.ts` | Tenant controller |
+| `apps/api/src/common/modules/tenant/tenant.module.ts` | Tenant module |
+| `apps/api/src/common/modules/tenant/index.ts` | Barrel export |
+| `apps/api/test/tenant-isolation.test.js` | Security verification tests |
+| `docs/reports/PHASE_03C_REPORT.md` | Completion report |
+
+### Files Modified (7 files)
+
+| File | Changes |
+|------|---------|
+| `packages/database/src/schema/index.ts` | Added store/membership exports |
+| `packages/database/src/index.ts` | Added store/membership exports |
+| `packages/types/src/auth.ts` | Removed old TenantContext |
+| `packages/types/src/index.ts` | Added new store type exports |
+| `packages/testing/src/factories.ts` | Updated mock factories |
+| `apps/api/src/app.module.ts` | Added TenantModule import |
+| `apps/api/src/main.ts` | Added stores tag to Swagger |
+
+### Issues Encountered
+
+1. **Testing Package Types:** Testing package had old TenantContext type — updated to use new store/membership structure
+2. **Store Schema:** Unused import and incorrect user reference — fixed
+3. **Middleware Types:** Optional membership type issue in resolveTenantFromSubdomain — fixed with type assertion
+4. **Controller Types:** Return type mismatches — fixed to use StoreProfile directly
+5. **Biome Formatting:** Import reordering and formatting — auto-fixed
+
+### Lessons Learned
+
+1. AsyncLocalStorage provides clean request-scoped tenant context
+2. Explicit membership model (store_memberships) is clearer than implicit tenant columns
+3. Subdomain-based resolution works for public storefronts, header-based for API clients
+4. Tenant guard integrates cleanly with existing AuthGuard + PermissionsGuard
+5. Better Auth session.user doesn't include tenant info — resolved at middleware layer
+6. Application-level isolation (ADR-004) requires discipline — tenant context must be used by all repositories
+7. **Architecture explicitly defines V1 as single-owner; multi-role was implemented but removed for compliance**
+
+---
+
+**Status:** Blocked by Phase 03C
+**Estimated Effort:** Medium
+**Dependencies:** Phase 03C
 
 ### Tasks
 - [ ] User registration endpoint
@@ -526,7 +669,9 @@
             ↓
 2026-08-08  Phase 03B — Authorization & User Management ✅
             ↓
-            Phase 03C — User Registration & Account Management 🟡 Ready
+2026-08-08  Phase 03C — Multi-Tenancy & Tenant Context ✅
+            ↓
+            Phase 03D — Account Lifecycle & Registration 🟡 Ready
             ↓
             ... (Phases 4-22)
             ↓
@@ -540,12 +685,12 @@
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 5 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B) |
+| Completed | 7 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 17 |
-| Overall Progress | 27% |
-| Current Phase | Phase 03C |
+| Pending | 15 |
+| Overall Progress | 32% |
+| Current Phase | Phase 03D — Account Lifecycle & Registration |
 | Readiness Score | 92/100 |
 
 ---
@@ -561,6 +706,7 @@
 | 2026-08-08 | Phase 2B | Completed | Request infrastructure & documentation |
 | 2026-08-08 | Phase 03A | Completed | Authentication foundation |
 | 2026-08-08 | Phase 03B | Completed | Authorization & user management |
+| 2026-08-08 | Phase 03C | Completed | Multi-tenancy & tenant context |
 
 ---
 

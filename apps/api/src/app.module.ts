@@ -6,6 +6,7 @@ import { ConfigModule } from './common/modules/config/config.module.js'
 import { DatabaseModule } from './common/modules/database/database.module.js'
 import { HealthModule } from './common/modules/health/health.module.js'
 import { RedisModule } from './common/modules/redis/redis.module.js'
+import { TenantModule } from './common/modules/tenant/tenant.module.js'
 import { UserModule } from './common/modules/user/user.module.js'
 
 /**
@@ -13,11 +14,19 @@ import { UserModule } from './common/modules/user/user.module.js'
  *
  * Imports all core infrastructure modules and registers
  * global middleware for correlation IDs, request logging,
- * and optional authentication context.
+ * optional authentication context, and tenant resolution.
  */
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, HealthModule, RedisModule, AuthModule, UserModule],
+  imports: [
+    ConfigModule,
+    DatabaseModule,
+    HealthModule,
+    RedisModule,
+    AuthModule,
+    UserModule,
+    TenantModule,
+  ],
   controllers: [],
   providers: [],
 })
