@@ -16,25 +16,25 @@
 
 **Current Phase**
 
-> Phase 03C — Multi-Tenancy & Tenant Context
+> Phase 03D — Account Lifecycle & Registration
 
 **Overall Progress**
 
-> 32%
+> 36%
 
 **Status**
 
-> ✅ Phase 03C Complete — Ready for Phase 03D
+> ✅ Phase 03D Complete — Ready for Phase 04
 
 **Current Milestone**
 
-> Multi-Tenancy & Tenant Context
+> Account Lifecycle & Registration
 
 ---
 
 # Current Objective
 
-Phase 03C is complete. Multi-tenancy infrastructure with tenant schema, user-store membership, tenant resolution middleware, tenant context via AsyncLocalStorage, tenant guard, and store CRUD endpoints are all in place. Authorization integrates RBAC with tenant membership. Ready to begin Phase 03D — Account Lifecycle & Registration.
+Phase 03D is complete. Account lifecycle and registration flows are fully implemented on top of the existing authentication, authorization, and tenant infrastructure. Registration, email verification, password reset, password change, and seller registration with store creation are all in place. Better Auth handles core authentication responsibilities (password hashing, session management, verification tokens, reset tokens). Email delivery is abstracted for Phase 14 integration.
 
 ---
 
@@ -52,10 +52,11 @@ Phase 03C is complete. Multi-tenancy infrastructure with tenant schema, user-sto
 
 ## Phase 03D — Account Lifecycle & Registration
 
-- [ ] User registration endpoint
-- [ ] Password reset flow
-- [ ] Email verification
-- [ ] Account settings
+- [x] User registration endpoint
+- [x] Password reset flow
+- [x] Email verification
+- [x] Account settings
+- [x] Seller registration with store creation
 
 ---
 
@@ -100,7 +101,7 @@ Before Phase 03C is complete:
 - [x] Existing error contract remains unchanged
 - [x] Swagger/OpenAPI is updated
 
-# Security Verification Checklist (2026-08-08)
+# Security Verification Checklist (2026-08-08):
 
 - [x] User A can access Store A (owner)
 - [x] User A CANNOT access Store B (cross-tenant)
@@ -113,71 +114,73 @@ Before Phase 03C is complete:
 - [x] All 17 tenant isolation tests pass (Node.js built-in test runner)
 - [✅] **Discrepancy Resolved:** Store membership role is now `owner` only (V1 compliant)
 
+---
+
 # Completed This Phase
 
-## Phase 03B — Authorization & User Management ✅
+## Phase 03D — Account Lifecycle & Registration ✅
 
-**Completion Date:** 2026-08-08
+**Completion Date:** 2026-08-09
 
 **Deliverables:**
-- [x] Role definitions (admin, seller, customer)
-- [x] Permission definitions (27 permissions across 10 categories)
-- [x] Permission matrix
-- [x] RBAC service
-- [x] Roles guard
-- [x] Permissions guard
-- [x] Role and permission decorators
-- [x] User management service
-- [x] User management controller
-- [x] User management module
-- [x] Role field added to user schema
-- [x] Permission matrix documentation
-- [x] Swagger/OpenAPI updated
+- [x] User registration endpoint (POST /api/v1/auth/register)
+- [x] Seller registration with store creation (POST /api/v1/auth/register/seller)
+- [x] Email verification flow (POST /api/v1/auth/verify-email, POST /api/v1/auth/verify-email/request)
+- [x] Password reset flow (POST /api/v1/auth/password/reset/request, POST /api/v1/auth/password/reset)
+- [x] Password change endpoint (POST /api/v1/auth/password/change)
+- [x] Better Auth configuration for email verification and password reset
+- [x] Email provider abstraction boundary for Phase 14
+- [x] Validation schemas for all new endpoints
+- [x] Swagger/OpenAPI documentation updated
+- [x] Focused tests for lifecycle operations (21 tests)
+- [x] All existing tenant isolation tests still pass (17/17)
 
 **Files Created:**
-- packages/auth/src/roles.ts
-- packages/auth/src/permissions.ts
-- packages/auth/src/permission-matrix.ts
-- apps/api/src/common/modules/auth/rbac.service.ts
-- apps/api/src/common/modules/auth/roles.guard.ts
-- apps/api/src/common/modules/auth/permissions.guard.ts
-- apps/api/src/common/modules/auth/auth.decorators.ts
-- apps/api/src/common/modules/user/user.service.ts
-- apps/api/src/common/modules/user/user.controller.ts
-- apps/api/src/common/modules/user/user.module.ts
-- apps/api/src/common/modules/user/index.ts
-- docs/spec/permissions/PERMISSION_MATRIX.md
-- docs/reports/PHASE_03B_REPORT.md
+- apps/api/test/account-lifecycle.test.js
+- docs/reports/PHASE_03D_REPORT.md
 
 **Files Modified:**
-- packages/auth/src/index.ts
+- packages/auth/src/auth-config.ts
+- packages/validation/src/schemas.ts
+- packages/validation/src/index.ts
 - packages/types/src/auth.ts
-- packages/types/src/index.ts
-- packages/database/src/schema/user.ts
-- packages/database/src/schema/index.ts
-- packages/database/src/index.ts
 - apps/api/src/common/modules/auth/auth.service.ts
-- apps/api/src/common/modules/auth/auth.module.ts
-- apps/api/src/common/modules/auth/index.ts
-- apps/api/src/app.module.ts
-- apps/api/src/main.ts
+- apps/api/src/common/modules/auth/auth.controller.ts
+- apps/api/package.json
 
 **Validation Results:**
 - [x] pnpm build succeeds (17/17 tasks)
 - [x] pnpm lint succeeds (no errors)
-- [x] pnpm typecheck succeeds (25/25 tasks)
+- [x] pnpm typecheck succeeds (26/26 tasks)
+- [x] Security verification: 17/17 tenant isolation tests pass
+- [x] Lifecycle tests: 21/21 pass
+
+**Security Considerations Implemented:**
+- Passwords never appear in logs (validated by tests)
+- Passwords never appear in API responses (validated by tests)
+- Enumeration protection: email verification and password reset requests always return success
+- Invalid tokens fail safely with generic error messages
+- Expired tokens fail safely
+- Password reset invalidates existing sessions (via Better Auth config)
+- Password change invalidates existing sessions (via Better Auth config)
+- Duplicate email handling with user-friendly message
+- Store slug uniqueness enforced
+- Email verification mandatory for seller activation (store status: created → configured)
 
 **Issues Encountered:**
-1. Better Auth session.user doesn't have a role field by default — cast to Record<string, unknown> to access role
-2. Biome required strict import ordering — reordered imports to match Biome's expectations
-3. Reflector import needed to be type-only — changed to import type
+1. **Better Auth API Signatures:** Required trial-and-error to determine correct parameter formats for verifyEmail (query), resetPassword (newPassword), changePassword (currentPassword/newPassword)
+2. **TypeScript Strict Mode:** Implicit any types in auth-config.ts callbacks required explicit typing
+3. **Import Ordering:** Biome enforced strict import ordering across modified files
+4. **Validation Module Dependency:** @loom/validation needed to be added to apps/api package.json
 
 **Lessons Learned:**
-1. Better Auth doesn't include role in session.user by default — need to extend or cast
-2. Biome enforces strict import ordering — type imports must come before value imports
-3. NestJS Reflector should be imported as type when only used for dependency injection
+1. Better Auth's email/password features (verification, reset) are built-in, not separate plugins
+2. Better Auth API uses `better-call` which has specific parameter structures (body, query, headers)
+3. Email delivery is properly abstracted for future provider integration (Phase 14)
+4. Seller onboarding flow: register → create store (status: created) → verify email → store status: configured
+5. Password policy: minimum 12 characters enforced at validation and Better Auth config level
 
-**Outcome:** Phase 03B — Authorization & User Management complete. Ready for Phase 03C — Multi-Tenancy & Tenant Context.
+**Outcome:** Phase 03D — Account Lifecycle & Registration complete. All account lifecycle operations implemented with security best practices. Ready for Phase 04 — Database.
 
 ---
 
@@ -268,50 +271,69 @@ Before Phase 03C is complete:
 
 ---
 
-## Phase 03A — Authentication Foundation ✅
+## Phase 03B — Authorization & User Management ✅
 
 **Completion Date:** 2026-08-08
 
 **Deliverables:**
-- [x] User schema
-- [x] Session schema
-- [x] Better Auth configuration
-- [x] Auth service
-- [x] Auth guard
-- [x] Auth middleware
-- [x] Auth controller
-- [x] Auth module
-- [x] AuthUser type
+- [x] Role definitions (admin, seller, customer)
+- [x] Permission definitions (27 permissions across 10 categories)
+- [x] Permission matrix
+- [x] RBAC service
+- [x] Roles guard
+- [x] Permissions guard
+- [x] Role and permission decorators
+- [x] User management service
+- [x] User management controller
+- [x] User management module
+- [x] Role field added to user schema
+- [x] Permission matrix documentation
+- [x] Swagger/OpenAPI updated
 
 **Files Created:**
-- packages/database/src/schema/user.ts
-- packages/database/src/schema/session.ts
-- packages/auth/src/auth-config.ts
-- apps/api/src/common/modules/auth/auth.service.ts
-- apps/api/src/common/modules/auth/auth.guard.ts
-- apps/api/src/common/modules/auth/auth.middleware.ts
-- apps/api/src/common/modules/auth/auth.controller.ts
-- apps/api/src/common/modules/auth/auth.module.ts
-- apps/api/src/common/modules/auth/index.ts
+- packages/auth/src/roles.ts
+- packages/auth/src/permissions.ts
+- packages/auth/src/permission-matrix.ts
+- apps/api/src/common/modules/auth/rbac.service.ts
+- apps/api/src/common/modules/auth/roles.guard.ts
+- apps/api/src/common/modules/auth/permissions.guard.ts
+- apps/api/src/common/modules/auth/auth.decorators.ts
+- apps/api/src/common/modules/user/user.service.ts
+- apps/api/src/common/modules/user/user.controller.ts
+- apps/api/src/common/modules/user/user.module.ts
+- apps/api/src/common/modules/user/index.ts
+- docs/spec/permissions/PERMISSION_MATRIX.md
+- docs/reports/PHASE_03B_REPORT.md
 
 **Files Modified:**
-- packages/database/src/schema/index.ts
-- packages/database/src/index.ts
-- packages/auth/package.json
 - packages/auth/src/index.ts
 - packages/types/src/auth.ts
 - packages/types/src/index.ts
+- packages/database/src/schema/user.ts
+- packages/database/src/schema/index.ts
+- packages/database/src/index.ts
+- apps/api/src/common/modules/auth/auth.service.ts
+- apps/api/src/common/modules/auth/auth.module.ts
+- apps/api/src/common/modules/auth/index.ts
 - apps/api/src/app.module.ts
 - apps/api/src/main.ts
-- apps/api/package.json
-- biome.json
 
 **Validation Results:**
 - [x] pnpm build succeeds (17/17 tasks)
 - [x] pnpm lint succeeds (no errors)
 - [x] pnpm typecheck succeeds (25/25 tasks)
 
-**Outcome:** Phase 03A — Authentication Foundation complete. Ready for Phase 03B.
+**Issues Encountered:**
+1. Better Auth session.user doesn't have a role field by default — cast to Record<string, unknown> to access role
+2. Biome required strict import ordering — reordered imports to match Biome's expectations
+3. Reflector import needed to be type-only — changed to import type
+
+**Lessons Learned:**
+1. Better Auth doesn't include role in session.user by default — need to extend or cast
+2. Biome enforces strict import ordering — type imports must come before value imports
+3. NestJS Reflector should be imported as type when only used for dependency injection
+
+**Outcome:** Phase 03B — Authorization & User Management complete. Ready for Phase 03C — Multi-Tenancy & Tenant Context.
 
 ---
 
@@ -469,11 +491,27 @@ Before Phase 03C is complete:
 
 # Next Phase
 
-Phase 03D — Account Lifecycle & Registration
+Phase 04 — Database
 
 ---
 
 # Recently Completed
+
+## 2026-08-09
+
+- Completed Phase 03D — Account Lifecycle & Registration
+- Implemented user registration endpoint (POST /api/v1/auth/register)
+- Implemented seller registration with store creation (POST /api/v1/auth/register/seller)
+- Implemented email verification flow (POST /api/v1/auth/verify-email, POST /api/v1/auth/verify-email/request)
+- Implemented password reset flow (POST /api/v1/auth/password/reset/request, POST /api/v1/auth/password/reset)
+- Implemented password change endpoint (POST /api/v1/auth/password/change)
+- Updated Better Auth config for email verification and password reset
+- Added email provider abstraction boundary for Phase 14
+- Added validation schemas for all new endpoints
+- Updated Swagger/OpenAPI documentation
+- Created focused tests for lifecycle operations (21 tests)
+- All existing tenant isolation tests still pass (17/17)
+- Validated: build, lint, typecheck all pass
 
 ## 2026-08-08
 
@@ -609,6 +647,50 @@ At the beginning of every session:
 ---
 
 # Session Log
+
+## Session 8
+
+Status: Completed
+
+Files Read:
+- AI_CONTEXT.md
+- PHASES.md
+- TASKS.md
+- PROGRESS.md
+- docs/adr/ADR-004-Multi-Tenancy.md
+- docs/adr/ADR-005-Better-Auth.md
+- docs/product/Product-Data-Model.md
+- docs/product/Feature-Specifications.md
+- docs/product/PRD.md
+- docs/product/Business-Rules.md
+- packages/auth/src/auth-config.ts
+- packages/database/src/schema/user.ts
+- packages/database/src/schema/session.ts
+- packages/database/src/schema/store.ts
+- packages/database/src/schema/store-membership.ts
+- apps/api/src/common/modules/auth/auth.service.ts
+- apps/api/src/common/modules/auth/auth.controller.ts
+- apps/api/src/common/modules/auth/auth.module.ts
+- apps/api/src/common/modules/tenant/tenant.service.ts
+- packages/types/src/auth.ts
+- packages/validation/src/schemas.ts
+
+Files Created:
+- apps/api/test/account-lifecycle.test.js
+- docs/reports/PHASE_03D_REPORT.md
+
+Files Modified:
+- packages/auth/src/auth-config.ts
+- packages/validation/src/schemas.ts
+- packages/validation/src/index.ts
+- packages/types/src/auth.ts
+- apps/api/src/common/modules/auth/auth.service.ts
+- apps/api/src/common/modules/auth/auth.controller.ts
+- apps/api/package.json
+
+Summary: Phase 03D — Account Lifecycle & Registration complete. Registration, email verification, password reset, password change, and seller registration with store creation all implemented. Better Auth handles core auth; email delivery abstracted for Phase 14. All validation, build, lint, typecheck, and tests pass. Ready for Phase 04.
+
+---
 
 ## Session 7
 

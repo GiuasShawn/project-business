@@ -8,8 +8,37 @@ export const authInstance = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
-    minPasswordLength: 8,
+    minPasswordLength: 12,
     maxPasswordLength: 128,
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({
+      user,
+      url,
+      token,
+    }: { user: { email: string }; url: string; token: string }) => {
+      await sendVerificationEmail(user.email, url, token)
+    },
+    sendOnSignUp: true,
+    autoSignInAfterVerification: false,
+    expiresIn: 60 * 60 * 24, // 24 hours
+  },
+  password: {
+    reset: {
+      sendResetPassword: async ({
+        user,
+        url,
+        token,
+      }: { user: { email: string }; url: string; token: string }) => {
+        await sendResetPasswordEmail(user.email, url, token)
+      },
+      resetPasswordTokenExpiresIn: 60 * 60, // 1 hour
+      revokeSessionsOnPasswordReset: true,
+    },
+    change: {
+      enabled: true,
+      revokeSessionsOnPasswordChange: true,
+    },
   },
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -28,3 +57,17 @@ export const authInstance = betterAuth({
 })
 
 export type AuthInstance = typeof authInstance
+
+// Email provider abstraction - implemented in apps/api or workers
+// This is a boundary that will be wired to actual email delivery in Phase 14
+async function sendVerificationEmail(email: string, url: string, token: string): Promise<void> {
+  // TODO: Wire to email delivery provider (Phase 14)
+  // For now, log the verification URL for development
+  console.log('[DEV] Email verification:', { email, url, token })
+}
+
+async function sendResetPasswordEmail(email: string, url: string, token: string): Promise<void> {
+  // TODO: Wire to email delivery provider (Phase 14)
+  // For now, log the reset URL for development
+  console.log('[DEV] Password reset:', { email, url, token })
+}

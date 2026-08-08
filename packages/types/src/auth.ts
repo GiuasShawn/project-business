@@ -40,3 +40,65 @@ export interface UpdateUserProfileDto {
   name?: string
   image?: string | null
 }
+
+/**
+ * Register user DTO.
+ */
+export interface RegisterUserDto {
+  email: string
+  password: string
+  name: string
+}
+
+/**
+ * Login DTO.
+ */
+export interface LoginDto {
+  email: string
+  password: string
+}
+
+/**
+ * Verify email DTO.
+ */
+export interface VerifyEmailDto {
+  token: string
+}
+
+/**
+ * Request email verification DTO.
+ */
+export interface RequestEmailVerificationDto {
+  email: string
+}
+
+/**
+ * Request password reset DTO.
+ */
+export interface RequestPasswordResetDto {
+  email: string
+}
+
+/**
+ * Reset password DTO.
+ */
+export interface ResetPasswordDto {
+  token: string
+  password: string
+}
+
+/**
+ * Change password DTO.
+ */
+export interface ChangePasswordDto {
+  currentPassword: string
+  newPassword: string
+}
+
+/**
+ * Seller registration DTO (includes store info).
+ */
+export interface SellerRegisterDto extends RegisterUserDto {
+  storeName: string
+  storeSlug: string
+}
