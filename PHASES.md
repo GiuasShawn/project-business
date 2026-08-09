@@ -280,25 +280,38 @@ Middleware
 
 # Phase 5 — Design System
 
-**Status:** Pending
+**Status:** Complete
 
 **Goal:** Complete design system. Build on existing packages/ui.
 
-**Note:** packages/ui (Button) already exists. Phase 5 adds remaining components.
+**Note:** packages/ui (Button) already exists. Phase 5 adds remaining components in apps/web.
 
 **Tasks**
-- [ ] Typography
-- [ ] Colors
-- [ ] Spacing
-- [ ] Theme
-- [ ] Inputs
-- [ ] Cards
-- [ ] Dialogs
-- [ ] Tables
-- [ ] Icons
+- [x] Typography (type scale, font stacks, label-caps, data-mono)
+- [x] Colors (Material 3 dark scheme, 50+ tokens in tailwind.config.ts)
+- [x] Spacing (stack-*, grid-*, container-max tokens)
+- [x] Theme (dark mode via html class="dark", M3 surface semantics)
+- [x] Inputs (ui/input.tsx — boxed and underline variants)
+- [x] Cards (ui/badge.tsx, ui/glass-panel.tsx, catalog/product-card.tsx)
+- [x] Dialogs (ui/dialog.tsx — accessible, focus trap, escape, motion, reduced-motion)
+- [x] Tables (ui/data-table.tsx — header, rows, cells, alignment, empty/loading states)
+- [x] Icons (ui/icon.tsx — Material Symbols, IconName union)
 
 **Validation**
-- [ ] Component playground renders
+- [x] pnpm lint passes (root)
+- [x] pnpm typecheck passes (26/26 tasks)
+- [x] pnpm build passes (17/17 tasks, 8 routes prerendered)
+- [x] All routes render in browser (/, /sign-in, /register, /forgot-password, /verify-email, /catalog, /editor)
+- [x] No console errors (except favicon 404 — fixed)
+- [x] Mobile layout works (bottom nav, responsive grid)
+- [x] Reduced motion works (no animations, no transforms)
+- [x] Commission always visible on product cards
+
+**Deliverables**
+- `apps/web/src/components/ui/` — 7 design system primitives
+- `apps/web/tailwind.config.ts` — Design tokens
+- `apps/web/src/lib/motion.ts` — Shared animation variants
+- `DESIGN.md` (root) — Canonical design documentation
 
 ---
 

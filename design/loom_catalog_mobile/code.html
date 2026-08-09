@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LOOM - Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#1d00a5",
+                        "on-tertiary-container": "#6c66ff",
+                        "outline-variant": "#46464a",
+                        "outline": "#919094",
+                        "on-primary-fixed-variant": "#474647",
+                        "primary": "#c8c6c7",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-primary": "#313031",
+                        "primary-fixed": "#e5e2e3",
+                        "surface-container-high": "#2a2a2d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-secondary": "#2f3131",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-surface-variant": "#c7c6ca",
+                        "tertiary-fixed": "#e2dfff",
+                        "inverse-on-surface": "#303033",
+                        "surface": "#131316",
+                        "surface-container-highest": "#353437",
+                        "surface-variant": "#353437",
+                        "on-tertiary-fixed-variant": "#3323cc",
+                        "secondary": "#c6c6c7",
+                        "surface-bright": "#39393c",
+                        "background": "#131316",
+                        "surface-container-low": "#1b1b1e",
+                        "inverse-primary": "#5f5e5f",
+                        "inverse-surface": "#e4e1e5",
+                        "on-secondary-container": "#b4b5b5",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "surface-dim": "#131316",
+                        "error-container": "#93000a",
+                        "on-surface": "#e4e1e5",
+                        "primary-container": "#0f0f10",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#1c1b1c",
+                        "tertiary": "#c3c0ff",
+                        "surface-container-lowest": "#0e0e11",
+                        "tertiary-container": "#060046",
+                        "primary-fixed-dim": "#c8c6c7",
+                        "surface-tint": "#c8c6c7",
+                        "on-secondary-fixed-variant": "#454747",
+                        "on-background": "#e4e1e5",
+                        "on-primary-container": "#7d7b7c",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "surface-container": "#1f1f22",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#454747"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "grid-gutter": "20px",
+                        "stack-lg": "32px",
+                        "grid-margin": "40px",
+                        "stack-md": "16px",
+                        "container-max": "1440px",
+                        "stack-sm": "8px",
+                        "stack-xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Public Sans"],
+                        "display-lg": ["Public Sans"],
+                        "data-mono": ["Inter"],
+                        "display-lg-mobile": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24 md:hidden flex flex-col font-body-lg text-body-lg">
+<!-- Top Navigation Area (Mobile specific interpretation) -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant px-grid-gutter py-stack-md flex justify-between items-center">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tighter">LOOM</h1>
+<div class="flex gap-stack-md">
+<button aria-label="Search" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<!-- Content Categories / Filters Scroll -->
+<div class="px-grid-gutter py-stack-sm overflow-x-auto no-scrollbar flex gap-stack-sm border-b border-outline-variant/50 sticky top-[72px] z-30 bg-surface/95 backdrop-blur-sm">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-on-surface text-surface font-label-caps text-label-caps transition-colors">ALL</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps">APPAREL</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps">ACCESSORIES</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps">HOME</button>
+</div>
+<!-- Main Content Area: Product Grid -->
+<main class="flex-1 px-grid-gutter py-stack-lg">
+<div class="grid grid-cols-2 gap-stack-sm">
+<!-- Product Card 1 -->
+<article class="flex flex-col group cursor-pointer">
+<div class="relative aspect-[3/4] mb-stack-sm overflow-hidden bg-surface-container">
+<img alt="Product Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="High-end editorial fashion photography of a minimalist black structured tote bag sitting on a stark concrete pedestal. The lighting is dramatic and cinematic, creating deep shadows that emphasize the bag's architectural silhouette. The background is a muted, cool-toned dark studio setting, aligning with a premium, industrial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByGaqs0nR-UbNVbOtCo2VPqfkW0kBdsuoqLYqy1O4xdFsSIXD390Nr07vfj31dROaujFT-Y1fHg9xYwnWHoEDXMKRsij2JZnGDJw1Y5FgBM_u11pU2gwfXBVu4h8MPLnXA7FW58LrxLyZgyXDqhiMF2bCF1CPQq10r1roGZb1EHEmwJnQulhTe8JTbe0-XNrUfn3_SBhxvCRYwudqk9orllsVlaYB9DD1VeJC8BMbi8VkAGeNMXciE"/>
+<button class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-md text-on-surface hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite_border">favorite_border</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="font-body-sm text-body-sm text-on-surface truncate">Structured Minimal Tote</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs truncate">Studio Collective</p>
+<div class="mt-1 flex items-baseline justify-between">
+<span class="font-data-mono text-data-mono text-on-surface">₹4,999</span>
+<span class="font-data-mono text-data-mono text-tertiary px-1.5 py-0.5 bg-tertiary-container/30 rounded-sm text-[10px]">15%</span>
+</div>
+</div>
+</article>
+<!-- Product Card 2 -->
+<article class="flex flex-col group cursor-pointer">
+<div class="relative aspect-[3/4] mb-stack-sm overflow-hidden bg-surface-container">
+<img alt="Product Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up editorial product shot of a sleek, matte-finish ceramic pour-over coffee set in deep charcoal grey. The objects rest on a brushed steel surface under sharp, directional lighting that highlights their textures. The scene is dark, moody, and highly polished, reflecting a sophisticated, modern minimalist design language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdyz3sW4kw9RN5ZiRjhpYrhQBkP0FNqOS7KoNaEo3z2OTdH2sMYscGT5s-alUzynPyUr5amJNzBHaez0G2t5apS7lTN4vtpKQGAPeB-Alhp46xBXttpYRnjVO_g3lvbvkzL8GUqNVWcdU7hJa0TinUXCkV8xY0dorhHcSUdVTToCFOB1VZYRR3LbM7U2sYTyCqr2dTT8kRab2ahYHtYbxbdaQ-QV5qOYsBF3tJwH6FTd8qgmsLw7yG"/>
+<button class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-md text-on-surface hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite_border">favorite_border</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="font-body-sm text-body-sm text-on-surface truncate">Ceramic Pour-Over Kit</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs truncate">Forma Home</p>
+<div class="mt-1 flex items-baseline justify-between">
+<span class="font-data-mono text-data-mono text-on-surface">₹2,450</span>
+<span class="font-data-mono text-data-mono text-tertiary px-1.5 py-0.5 bg-tertiary-container/30 rounded-sm text-[10px]">20%</span>
+</div>
+</div>
+</article>
+<!-- Product Card 3 -->
+<article class="flex flex-col group cursor-pointer">
+<div class="relative aspect-[3/4] mb-stack-sm overflow-hidden bg-surface-container">
+<img alt="Product Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking image of a heavy, forged iron candle holder holding a single tall black taper candle. The background is a textured, dark slate wall. The lighting is minimal, focusing entirely on the raw texture of the iron and the sleekness of the candle, conveying a sense of industrial luxury and permanence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQN73idSdvKxwLX3ZQxfjFZs5sb5Aj_t5Gq7Dnn5fYUlBUAXo4fNwNEDc2uteKV75nD0-kjLh8EA0UP5Zhqx_0E2pXFLeMgp6OlpsajquZrB5IUUaPUsWGr-SVWvxCC03PgZVVpd7D27Jv9YKFaO0LIbc4TZ045FYq9cPErMHyLoo_WU3QdRQM9EM94hhCtuW-nONV7lm-rvctX_9p5mCo8rwOmaeNifMQohhbNh2FZ57rEZKIFrUQ"/>
+<button class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-md text-on-surface hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite_border">favorite_border</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="font-body-sm text-body-sm text-on-surface truncate">Forged Iron Holder</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs truncate">Raw Elements</p>
+<div class="mt-1 flex items-baseline justify-between">
+<span class="font-data-mono text-data-mono text-on-surface">₹1,299</span>
+<span class="font-data-mono text-data-mono text-tertiary px-1.5 py-0.5 bg-tertiary-container/30 rounded-sm text-[10px]">18%</span>
+</div>
+</div>
+</article>
+<!-- Product Card 4 -->
+<article class="flex flex-col group cursor-pointer">
+<div class="relative aspect-[3/4] mb-stack-sm overflow-hidden bg-surface-container">
+<img alt="Product Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="High-fashion photography of a model wearing a heavy, oversized knit sweater in a stark, monochromatic dark studio. Only the texture of the knitwear and a glimpse of the model's profile are visible. The mood is confident, edgy, and high-end, utilizing deep shadows and crisp focus to emphasize premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM2f09sSI85KsJyKbQOJ7388Vr_W6043f2Ofx0_6gsBxQcVHN0wpaPA0PDNSbrUZPwBWbRNDjNO-jqYUMF3BhnzRw4v8bD7Aw-TvgGj2ZoHzMFR3h5Vru-oFfn__Ce-waQ9gRvWg3c4lZD2J7ttW3kvHLqJ7Z10KCAetZ1EJW5SDMUlDq0xqAlKjvW-EIec5JBsf-P7noXQiD4fCn1mEfwTXmcXCJVFF_mcyzAs-hrvPxwpD4XjN_B"/>
+<button class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-md text-on-surface hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="favorite_border">favorite_border</span>
+</button>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="font-body-sm text-body-sm text-on-surface truncate">Oversized Heavy Knit</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs truncate">Studio Collective</p>
+<div class="mt-1 flex items-baseline justify-between">
+<span class="font-data-mono text-data-mono text-on-surface">₹6,800</span>
+<span class="font-data-mono text-data-mono text-tertiary px-1.5 py-0.5 bg-tertiary-container/30 rounded-sm text-[10px]">12%</span>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Floating Action Button (Filters) -->
+<button class="fixed bottom-28 right-grid-gutter z-50 bg-on-surface text-surface px-6 py-3 rounded-full flex items-center gap-2 shadow-[0_4px_20px_rgba(0,0,0,0.5)] active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+<span class="font-label-caps text-label-caps">FILTERS</span>
+</button>
+<!-- Bottom Navigation Bar (Custom implementation based on specs for mobile) -->
+<nav class="fixed bottom-0 w-full bg-surface-container-low border-t border-outline-variant z-50 pb-safe">
+<div class="flex justify-around items-center h-16">
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface gap-1">
+<span class="material-symbols-outlined" data-icon="storefront" data-weight="fill" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-label-caps text-[9px] tracking-widest font-semibold">CATALOG</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors gap-1">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-caps text-[9px] tracking-widest">SEARCH</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors gap-1">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-caps text-[9px] tracking-widest">INVENTORY</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors gap-1">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-caps text-[9px] tracking-widest">EARNINGS</span>
+</button>
+</div>
+</nav>
+</body></html>

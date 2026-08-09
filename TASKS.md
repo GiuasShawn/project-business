@@ -16,19 +16,19 @@
 
 **Current Phase**
 
-> Phase 04.5 — Security & Correctness Hardening
+> Phase 05 — Design System (Complete)
 
 **Overall Progress**
 
-> 45%
+> 50%
 
 **Status**
 
-> 🟢 Phase 04.5 Complete — Security & correctness hardening landed; monorepo lint / typecheck / build / integration tests all pass. Ready for Phase 05 (Design System).
+> 🟢 Phase 05 Complete — Design system implemented in apps/web: 7 UI primitives, Material 3 tokens, motion system, responsive layouts, accessibility. Root lint/typecheck/build pass. All 8 routes render. Reduced-motion verified.
 
 **Current Milestone**
 
-> Security & Correctness Hardening
+> Design System Complete
 
 ---
 
@@ -76,6 +76,24 @@ Environment constraint: the agent runtime used to land Phase 04/04.5 has Docker 
 - [x] Integration test foundation (`apps/api/test`) — 6 tests passing
 - [x] `GlobalExceptionFilter` envelope-preservation fix
 - [x] `docs/reports/PHASE_04_5_REPORT.md` written
+
+## Phase 05 — Design System
+
+- [x] Root lint fix (`apps/web/next.config.ts` — import order, trailing newline)
+- [x] Shared Dialog component (`ui/dialog.tsx` — accessible, focus trap, escape, motion, reduced-motion)
+- [x] Shared Data Table component (`ui/data-table.tsx` — header, rows, cells, alignment, empty/loading states)
+- [x] Editor route (`/editor` — split-pane, sidebar with accordion controls, live preview)
+- [x] Seller navigation updated (Launch Store → /editor, placeholder links explicit with "Soon" label)
+- [x] Favicon fixed (`public/favicon.svg` with Loom branding)
+- [x] Root DESIGN.md created (canonical design documentation derived from Stitch foundation)
+- [x] Design system primitives: button, input, dialog, data-table, icon, glass-panel, badge/chip
+- [x] Material 3 tokens in tailwind.config.ts (50+ colors, typography, spacing, border-radius)
+- [x] Motion system (`lib/motion.ts` — fadeUp, fadeIn, scaleIn, staggerContainer, EASE_OUT)
+- [x] Responsive layouts (mobile bottom nav, desktop sidebar, auth card, editor split-pane)
+- [x] Accessibility (semantic HTML, focus management, reduced-motion, color contrast)
+- [x] Commission always visible on product cards
+- [x] Validation: pnpm lint ✓, pnpm typecheck ✓ (26/26), pnpm build ✓ (17/17)
+- [x] Browser smoke: all 8 routes render, no console errors, mobile works, reduced-motion works
 
 ## Phase 04 — Domain Data Foundation
 

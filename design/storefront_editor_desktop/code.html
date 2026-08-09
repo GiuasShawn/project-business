@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Customization Editor - Loom</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#1d00a5",
+                        "on-tertiary-container": "#6c66ff",
+                        "outline-variant": "#46464a",
+                        "outline": "#919094",
+                        "on-primary-fixed-variant": "#474647",
+                        "primary": "#c8c6c7",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-primary": "#313031",
+                        "primary-fixed": "#e5e2e3",
+                        "surface-container-high": "#2a2a2d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#0f0069",
+                        "on-secondary": "#2f3131",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-surface-variant": "#c7c6ca",
+                        "tertiary-fixed": "#e2dfff",
+                        "inverse-on-surface": "#303033",
+                        "surface": "#131316",
+                        "surface-container-highest": "#353437",
+                        "surface-variant": "#353437",
+                        "on-tertiary-fixed-variant": "#3323cc",
+                        "secondary": "#c6c6c7",
+                        "surface-bright": "#39393c",
+                        "background": "#131316",
+                        "surface-container-low": "#1b1b1e",
+                        "inverse-primary": "#5f5e5f",
+                        "inverse-surface": "#e4e1e5",
+                        "on-secondary-container": "#b4b5b5",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "surface-dim": "#131316",
+                        "error-container": "#93000a",
+                        "on-surface": "#e4e1e5",
+                        "primary-container": "#0f0f10",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#1c1b1c",
+                        "tertiary": "#c3c0ff",
+                        "surface-container-lowest": "#0e0e11",
+                        "tertiary-container": "#060046",
+                        "primary-fixed-dim": "#c8c6c7",
+                        "surface-tint": "#c8c6c7",
+                        "on-secondary-fixed-variant": "#454747",
+                        "on-background": "#e4e1e5",
+                        "on-primary-container": "#7d7b7c",
+                        "tertiary-fixed-dim": "#c3c0ff",
+                        "surface-container": "#1f1f22",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#454747"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "grid-gutter": "20px",
+                        "stack-lg": "32px",
+                        "grid-margin": "40px",
+                        "stack-md": "16px",
+                        "container-max": "1440px",
+                        "stack-sm": "8px",
+                        "stack-xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Public Sans"],
+                        "display-lg": ["Public Sans"],
+                        "data-mono": ["Inter"],
+                        "display-lg-mobile": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for editor pane to maintain clean aesthetic */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #353437; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #46464a; }
+        
+        /* Accordion transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            opacity: 1;
+            padding-bottom: 24px; /* Maps to generic spacing */
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-icon.open {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden font-body-sm selection:bg-tertiary-container selection:text-on-tertiary-container">
+<!-- JSON SIDENAVBAR (Serving as Left Pane Editor Container) -->
+<nav class="bg-surface-container-low text-on-surface font-label-caps text-label-caps border-r border-outline-variant flex flex-col h-screen fixed left-0 top-0 w-[380px] z-50 overflow-y-auto pb-stack-lg">
+<!-- Header Section -->
+<div class="px-6 py-stack-lg border-b border-outline-variant flex flex-col gap-stack-sm">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 bg-surface">
+<img alt="Store Logo" class="w-full h-full object-cover" data-alt="A stark, high-contrast, black and white minimalist geometric avatar suitable for a luxury fashion curator brand. The image is devoid of color, focusing on sharp angles and deep shadows to convey a brutalist, high-end editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMbUtNsx_3-J3pZM51uLJAYndK4UiqSXvxUsobISlG3tsjiJ5LzVj7UWKlofE3dwfFCgY_YWjp6x4fBK2XloZVwHTv1DcCxMF1DiTySTegQ59YLs2AzIFcZa6V-yW2HtsvJOVyl4Gz3LCiLQDbQ9J-5Zf4OK4qbewbTjc-g2hy4sKebXxY8rrd_wNPwIn1A1osyp2hjp-VGy5Y1kPAobJOgZNqywnxymBjqrmxtpFyuo3MAXF-Q6EF"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Loom Curator</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Premium Tier</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-DEFAULT font-label-caps text-label-caps hover:bg-surface-tint transition-colors duration-200 uppercase tracking-widest">
+                Launch Store
+            </button>
+</div>
+<!-- Navigation Tabs (Horizontal scrolling for density) -->
+<div class="flex overflow-x-auto border-b border-outline-variant px-2 py-4 gap-2 no-scrollbar">
+<!-- Active Tab (Storefront) -->
+<button class="bg-secondary-container text-on-secondary-container font-bold px-4 py-2 rounded-full flex items-center gap-2 shrink-0 transition-all scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]">storefront</span>
+                Storefront
+            </button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-all px-4 py-2 rounded-full flex items-center gap-2 shrink-0">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                Inventory
+            </button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-all px-4 py-2 rounded-full flex items-center gap-2 shrink-0">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+                Earnings
+            </button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-all px-4 py-2 rounded-full flex items-center gap-2 shrink-0">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+                Settings
+            </button>
+</div>
+<!-- Editor Controls (Accordions) -->
+<div class="flex-1 px-6 mt-4">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-6 uppercase tracking-widest">Customization Suite</h2>
+<!-- Accordion 1: Identity -->
+<div class="border-b border-outline-variant">
+<button class="w-full flex justify-between items-center py-4 text-left group" onclick="toggleAccordion('acc-identity', this)">
+<span class="font-body-lg text-body-lg font-medium text-on-surface group-hover:text-primary transition-colors">Brand Identity</span>
+<span class="material-symbols-outlined text-on-surface-variant accordion-icon open">expand_more</span>
+</button>
+<div class="accordion-content open pt-2" id="acc-identity">
+<div class="flex flex-col gap-6">
+<!-- Store Name Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Store Name</label>
+<input class="bg-transparent border-b border-outline-variant text-body-sm text-on-surface py-2 focus:outline-none focus:border-tertiary-container transition-colors w-full font-medium" placeholder="Enter store name" type="text" value="STUDIO NOUVEAU"/>
+</div>
+<!-- Logo Upload -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Logo Asset</label>
+<div class="w-full h-32 border border-outline-variant border-dashed rounded-DEFAULT flex flex-col items-center justify-center gap-2 hover:bg-surface-container-high cursor-pointer transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">cloud_upload</span>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors text-xs">Drop SVG or PNG</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Accordion 2: Theme -->
+<div class="border-b border-outline-variant">
+<button class="w-full flex justify-between items-center py-4 text-left group" onclick="toggleAccordion('acc-theme', this)">
+<span class="font-body-lg text-body-lg font-medium text-on-surface group-hover:text-primary transition-colors">Theme &amp; Color</span>
+<span class="material-symbols-outlined text-on-surface-variant accordion-icon">expand_more</span>
+</button>
+<div class="accordion-content pt-2" id="acc-theme">
+<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-3">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Accent Palette</label>
+<div class="flex gap-4">
+<button class="w-8 h-8 rounded-full bg-on-surface border-2 border-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-tertiary-container transition-all"></button>
+<button class="w-8 h-8 rounded-full bg-[#7D7B7C] border border-outline-variant focus:outline-none hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 rounded-full bg-[#1A1C1C] border border-outline-variant focus:outline-none hover:scale-110 transition-transform"></button>
+<!-- Custom color picker button -->
+<button class="w-8 h-8 rounded-full border border-outline-variant border-dashed flex items-center justify-center hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Accordion 3: Layout -->
+<div class="border-b border-outline-variant">
+<button class="w-full flex justify-between items-center py-4 text-left group" onclick="toggleAccordion('acc-layout', this)">
+<span class="font-body-lg text-body-lg font-medium text-on-surface group-hover:text-primary transition-colors">Storefront Layout</span>
+<span class="material-symbols-outlined text-on-surface-variant accordion-icon">expand_more</span>
+</button>
+<div class="accordion-content pt-2" id="acc-layout">
+<div class="grid grid-cols-2 gap-4">
+<!-- Grid Option -->
+<div class="border border-tertiary-container bg-surface-container-high rounded-DEFAULT p-3 cursor-pointer relative">
+<div class="absolute top-2 right-2 w-3 h-3 bg-tertiary-container rounded-full"></div>
+<div class="grid grid-cols-2 gap-1 mb-2">
+<div class="h-10 bg-outline-variant rounded-sm"></div>
+<div class="h-10 bg-outline-variant rounded-sm"></div>
+<div class="h-10 bg-outline-variant rounded-sm"></div>
+<div class="h-10 bg-outline-variant rounded-sm"></div>
+</div>
+<p class="font-label-caps text-[10px] text-center text-on-surface uppercase tracking-wider">Editorial Grid</p>
+</div>
+<!-- List Option -->
+<div class="border border-outline-variant hover:border-on-surface-variant bg-surface rounded-DEFAULT p-3 cursor-pointer transition-colors">
+<div class="flex flex-col gap-1 mb-2">
+<div class="h-6 bg-outline-variant rounded-sm w-full"></div>
+<div class="h-6 bg-outline-variant rounded-sm w-full"></div>
+<div class="h-6 bg-outline-variant rounded-sm w-full"></div>
+</div>
+<p class="font-label-caps text-[10px] text-center text-on-surface-variant uppercase tracking-wider">Linear List</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Accordion 4: Catalog -->
+<div class="border-b border-outline-variant mb-8">
+<button class="w-full flex justify-between items-center py-4 text-left group" onclick="toggleAccordion('acc-catalog', this)">
+<span class="font-body-lg text-body-lg font-medium text-on-surface group-hover:text-primary transition-colors">Featured Catalog</span>
+<span class="material-symbols-outlined text-on-surface-variant accordion-icon">expand_more</span>
+</button>
+<div class="accordion-content pt-2" id="acc-catalog">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 p-2 bg-surface-container-highest rounded-sm border border-outline-variant">
+<input checked="" class="rounded-sm bg-transparent border-outline-variant text-tertiary-container focus:ring-tertiary-container focus:ring-offset-background" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">FW24 Avant-Garde Collection</span>
+</div>
+<div class="flex items-center gap-3 p-2 hover:bg-surface-container-high rounded-sm transition-colors cursor-pointer">
+<input class="rounded-sm bg-transparent border-outline-variant text-tertiary-container focus:ring-tertiary-container focus:ring-offset-background" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Archival Footwear</span>
+</div>
+<div class="flex items-center gap-3 p-2 hover:bg-surface-container-high rounded-sm transition-colors cursor-pointer">
+<input class="rounded-sm bg-transparent border-outline-variant text-tertiary-container focus:ring-tertiary-container focus:ring-offset-background" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Brutalist Accessories</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- RIGHT PANE (Live Preview Canvas) -->
+<main class="ml-[380px] flex-1 h-screen bg-surface-container-lowest flex flex-col relative">
+<!-- Preview Toolbar -->
+<header class="h-16 border-b border-outline-variant bg-surface flex justify-between items-center px-6 shrink-0 z-10 shadow-sm">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Viewport Mode</span>
+<div class="flex bg-surface-container-high rounded-sm border border-outline-variant p-1">
+<button class="p-1 px-3 bg-secondary-container text-on-secondary-container rounded-sm transition-colors">
+<span class="material-symbols-outlined text-[18px] block">desktop_windows</span>
+</button>
+<button class="p-1 px-3 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px] block">smartphone</span>
+</button>
+</div>
+</div>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-6 py-2 rounded-DEFAULT uppercase tracking-widest hover:opacity-90 transition-opacity shadow-[0_0_15px_rgba(200,198,199,0.1)]">
+                Publish Changes
+            </button>
+</header>
+<!-- Canvas Area -->
+<div class="flex-1 overflow-y-auto p-grid-margin flex justify-center items-start bg-[radial-gradient(circle_at_center,rgba(42,42,45,0.4)_0%,rgba(14,14,17,1)_100%)]">
+<!-- Storefront Mockup Container -->
+<div class="w-full max-w-[1200px] bg-background border border-outline-variant shadow-2xl flex flex-col min-h-[900px] transition-all duration-500 ease-in-out">
+<!-- Mockup Top Nav -->
+<nav class="w-full px-grid-margin py-6 border-b border-outline-variant flex justify-between items-center bg-surface">
+<div class="text-on-surface font-display-lg-mobile text-display-lg-mobile font-bold tracking-tighter uppercase">
+                        STUDIO NOUVEAU
+                    </div>
+<div class="flex gap-6 font-label-caps text-label-caps text-on-surface uppercase tracking-widest">
+<a class="border-b-2 border-on-surface pb-1" href="#">Shop</a>
+<a class="text-on-surface-variant" href="#">Editorial</a>
+<a class="text-on-surface-variant" href="#">Archive</a>
+</div>
+<div class="flex gap-4 text-on-surface">
+<span class="material-symbols-outlined font-light">search</span>
+<span class="material-symbols-outlined font-light">shopping_bag</span>
+</div>
+</nav>
+<!-- Mockup Hero Section -->
+<div class="w-full h-[500px] relative border-b border-outline-variant bg-surface-container-high overflow-hidden group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="A sweeping, cinematic fashion editorial shot inside an abandoned, brutalist concrete warehouse. A single model stands in stark, dramatic lighting wearing a voluminous, structural black garment that absorbs the light. The mood is dark, mysterious, and incredibly high-end, utilizing deep blacks, harsh white highlights, and a very subtle cold grey tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW2feWjFi9Xd38fBalEy0sE3EnK5IAHKFRdk_759usxUtDri7423lANll3P3CezDD-cRkmK-hhHzPzZurSgfhn9ZbzqsUPFVA56AmXGuY4uIvOJ3ZMUSseBLB0WxeyIkwbbXQQoSwGoooZ5xp5OOAnhdkfoIVPm6TDosqwODZr5x-agPzkaTx_jb77ik_mIRf_vx7szF7ONInnBFX2Vw2A0xMmVEDDIDyziY9iKEtBtFNvLRAuks37"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex flex-col justify-end p-grid-margin">
+<h2 class="font-display-lg text-display-lg text-on-surface uppercase tracking-tighter max-w-2xl">FW24 Avant-Garde Collection</h2>
+<button class="mt-6 border border-on-surface text-on-surface font-label-caps px-6 py-3 w-max hover:bg-on-surface hover:text-background transition-colors uppercase tracking-widest">Explore Campaign</button>
+</div>
+</div>
+<!-- Mockup Product Grid -->
+<div class="p-grid-margin bg-background">
+<div class="flex justify-between items-end mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Curated Arrivals</h3>
+<span class="font-label-caps text-on-surface-variant uppercase tracking-widest border-b border-outline-variant pb-1 cursor-pointer hover:text-on-surface transition-colors">View All</span>
+</div>
+<div class="grid grid-cols-3 gap-grid-gutter">
+<!-- Product Card 1 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="w-full aspect-[4/5] bg-surface-container-low mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300 mix-blend-luminosity hover:mix-blend-normal" data-alt="A highly detailed product shot of a structured, matte black leather handbag with aggressive, geometric silver hardware. The bag sits on a stark, reflective dark grey platform against a pitch-black backdrop. Lighting is directional and harsh, emphasizing the texture of the leather and the shine of the metal. Minimalist, luxury e-commerce aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb_LVwgeh4pQcMp8s2JAvTpKPeRCKkmTcxuySIJSWxUbe27guAEPT-UCz6KFi9FpIc5Vx7Jc9YJ-4ptw9UTw8z2pd_M1A9xJ2lU1Ppl5aTw8ZIbbSv23RMOcKie1aaaTkCmWoKGHFP8Avbc7u5T_U_QcW3ttzDXnOOrKHNMQ14dOHilGoiN0V4rdM2nnCoPg_mZjjaIK_Ryu5e7NEhu65iAgA4onW9e725Gmwd5KcZr3sdldddd_ou"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Obsidian Structure Tote</p>
+<p class="font-body-sm text-on-surface-variant mt-1">Matte Calfskin</p>
+</div>
+</div>
+<div class="mt-4 flex gap-3 items-center">
+<span class="font-data-mono text-data-mono text-on-surface border border-outline-variant px-2 py-1">$1,250</span>
+<span class="font-data-mono text-[12px] text-tertiary-container bg-tertiary-container/10 px-2 py-1 rounded-sm">15% Comm.</span>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="w-full aspect-[4/5] bg-surface-container-low mb-4 overflow-hidden relative">
+<div class="absolute top-4 left-4 bg-primary text-on-primary font-label-caps text-[10px] px-2 py-1 uppercase tracking-widest z-10">Exclusive</div>
+<img class="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300 mix-blend-luminosity hover:mix-blend-normal" data-alt="A stark, editorial still life of an avant-garde footwear piece—a heavy, brutalist boot combining tactical nylon and thick ribbed rubber soles. It is photographed from a low angle on a slab of rough concrete, spotlit against a pure black background to highlight its imposing silhouette and premium materials." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAqat3q5zipGqDG6PyA_0bKSH24v69m2Y4CKQ1YxLGgoovdoh6vb11Sw9mIyGdBp7zPxGnebhDsrYElquguhUjUHFGuJwCA-5s7ro64U-Ig4K1sNzCItNNZKPb08a-1gK9IG5ZcTTnpIyFwmAg3TbIldBnNtO5VA9fr4vI2jyN5TRoQrcr8fQSAyXACWJNJZUzKyG5W80XYpverpXVrhdKw1u_ySoUdvxmuFn4eayaSLSsSBQ1bNE"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Tactical Tread Boot</p>
+<p class="font-body-sm text-on-surface-variant mt-1">Nylon &amp; Vulcanized Rubber</p>
+</div>
+</div>
+<div class="mt-4 flex gap-3 items-center">
+<span class="font-data-mono text-data-mono text-on-surface border border-outline-variant px-2 py-1">$890</span>
+<span class="font-data-mono text-[12px] text-tertiary-container bg-tertiary-container/10 px-2 py-1 rounded-sm">12% Comm.</span>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="w-full aspect-[4/5] bg-surface-container-low mb-4 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:opacity-80 transition-opacity duration-300 mix-blend-luminosity hover:mix-blend-normal" data-alt="A macro shot of a heavy, industrial-style sterling silver ring with distressed textures and a raw, unfinished look. The jewelry rests on a dark slate surface, illuminated by a very narrow beam of cool white light that creates intense, dramatic shadows. The focus is incredibly sharp on the metal's texture, evoking a high-end artisanal brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABUrJT1gHoWD1kVfH7Ey26ivpJJCt0Z8_Xcjg-W4zWYVJBtX2HrjQaRxhyyn73-yAH5nduTQN5fHzkMkOwH07RxcH-i6XQVlk20KO7pVsPUokgflVKyCL-VeUwXvOzxPPcdduEyyUtA7p9Xb3jy0lc8AjopaP4Zsqd3bx8ynbtduF9qzSeZe9dSflqlLAdiagv8H2KJ4sRg0Nmc0NDHX2n5K-ZsB3yo4oMItQYyUrb_zDjBpoVImlU"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Molten Silver Signet</p>
+<p class="font-body-sm text-on-surface-variant mt-1">925 Sterling Silver</p>
+</div>
+</div>
+<div class="mt-4 flex gap-3 items-center">
+<span class="font-data-mono text-data-mono text-on-surface border border-outline-variant px-2 py-1">$450</span>
+<span class="font-data-mono text-[12px] text-tertiary-container bg-tertiary-container/10 px-2 py-1 rounded-sm">20% Comm.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleAccordion(id, btnElement) {
+            const content = document.getElementById(id);
+            const icon = btnElement.querySelector('.accordion-icon');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('open');
+            } else {
+                // Optional: Close others (comment out for independent toggling)
+                // document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+                // document.querySelectorAll('.accordion-icon').forEach(el => el.classList.remove('open'));
+                
+                content.classList.add('open');
+                icon.classList.add('open');
+            }
+        }
+    </script>
+</body></html>
