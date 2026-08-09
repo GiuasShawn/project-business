@@ -5,20 +5,25 @@ import { index, integer, text, timestamp, uuid } from 'drizzle-orm/pg-core'
  * Common columns applied to every table.
  *
  * Convention:
- *  - UUID primary key (gen_random_uuid default at DB level)
+ *  - UUID v7 primary key (via pg_uuidv7 extension, monotonic, time-ordered)
  *  - created_at / updated_at in UTC
+ *
+ * UUID v7 is preferred per ADR-017. The pg_uuidv7 extension provides
+ * uuid_generate_v7() which embeds a Unix timestamp for monotonic index
+ * insertion, reducing page splits and vacuum pressure at scale.
  *
  * Optional audit columns are exposed as a separate spread helper so domain
  * tables opt-in case-by-case (see docs/database/Database-Package.md DB-003
  * "Where applicable"). They are NOT included in the baseline `createBaseColumns()`
  * because most tables do not need them in V1.
  *
+ * @see docs/adr/ADR-017-UUID-v7-Strategy.md
  * @see docs/database/Database-Package.md DB-003
  */
 
 export function createBaseColumns() {
   return {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: uuid('id').primaryKey().default(sql`uuid_generate_v7()`),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   }

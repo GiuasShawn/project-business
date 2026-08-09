@@ -16,43 +16,66 @@
 
 **Current Phase**
 
-> Phase 04 — Domain Data Foundation
+> Phase 04.5 — Security & Correctness Hardening
 
 **Overall Progress**
 
-> 41%
+> 45%
 
 **Status**
 
-> 🟡 Phase 04 Complete — DB migration generation verified; Docker-side runtime verification documented in runbook.
+> 🟢 Phase 04.5 Complete — Security & correctness hardening landed; monorepo lint / typecheck / build / integration tests all pass. Ready for Phase 05 (Design System).
 
 **Current Milestone**
 
-> Domain Data Foundation
+> Security & Correctness Hardening
 
 ---
 
 # Current Objective
 
-Phase 04 is complete. Cross-domain data foundation is in place:
+Phase 04.5 (hardening pass on top of Phase 04) is complete:
 
-- Schema normalization to UPPERCASE canonical enum values (per ADR-013).
-- V1 application role set is `ADMIN`, `SELLER`, `CUSTOMER`; `SUPER_ADMIN` exists in `user_role` enum but is not activated (ADR-014).
-- `store_status` initial state is `DRAFT` (ADR-015).
-- Better Auth persistence declared in `@loom/database` (`accounts`, `verifications`) — Better Auth adapter now uses the schema map (ADR-016).
-- Cross-domain primitives introduced: `currencies`, `addresses`, `file_assets`, `audit_logs`.
-- DB-004 enums declared ahead of table creation for Order, Payment, Return, Commission, Payout, Notification, Seller — eliminates rename migrations downstream.
-- Optional audit column helper (`createOptionalAuditColumns`) exposed.
-- Drizzle relations and FK indexes added.
-- First Drizzle migration generated as `drizzle/0000_perpetual_madame_masque.sql` (10 tables, 15 enums, all FKs and FK indexes).
-- Register-and-run dev seed with idempotent admin/seller/customer + 1 store + 1 OWNER membership.
-- Database README runbook committed.
+- `ZodValidationPipe` wired into auth / user / tenant controllers — HTTP-boundary validation now uses the canonical `@loom/validation` schemas.
+- `RateLimitGuard` applied to 8 auth endpoints (register, login, verify-email, password reset/change, verify-email resend).
+- Dead `@nestjs/platform-fastify` dependency removed.
+- N+1 eliminated: `getUserStores` uses a single batched IN query; controller maps fetched rows instead of per-store lookups.
+- `BETTER_AUTH_URL` configured as Better Auth's `baseURL` (ADR-011 callbacks / verification links).
+- ADR-017: UUID v7 PK strategy frozen (`pg_uuidv7` extension, v4 fallback) — new tables from Phase 5 onward use v7.
+- ADR-018: Analytics events partitioning (monthly, declarative) decided at design level.
+- `scripts/db-backup.mjs` (backup / restore / list) plus root `db:backup` / `db:restore` / `db:backup:list` scripts.
+- `packages/auth/verify.mjs` Better Auth config verifier.
+- Integration test foundation: `apps/api/test/health.integration.test.mjs` (6 tests, Node `node:test`, no new deps).
+- `GlobalExceptionFilter` fix: preserves conformed API error envelopes (bug found & fixed via the new integration test).
 
-Environment constraint: the agent runtime used to land Phase 04 has Docker and PostgreSQL unavailable. Steps that require a live database (apply migration, run seed, observe application startup) are **documented as a reproducible runbook** in `packages/database/README.md`. The monorepo `lint`, `typecheck`, `build`, and existing tests all pass.
+Phase 04 (under Phase 04.5) remains complete and documented below.
+
+Environment constraint: the agent runtime used to land Phase 04/04.5 has Docker and PostgreSQL unavailable. Steps that require a live database (apply migration, run seed, exercise DB backup/restore) are **documented as a reproducible runbook** in `packages/database/README.md`. The monorepo `lint`, `typecheck`, `build`, and all tests pass.
 
 ---
 
 # Current Tasks
+
+## Phase 04.5 — Security & Correctness Hardening
+
+- [x] `ZodValidationPipe` created (`apps/api/src/common/pipes/zod-validation.pipe.ts`, barrel `index.ts`)
+- [x] Auth controller switched to Zod schemas for all 9 DTOs
+- [x] User controller switched to Zod (`updateProfileSchema`), duplicate AuthGuard removed
+- [x] Tenant controller switched to Zod (`createStoreSchema`, `updateStoreSchema`)
+- [x] `RateLimitGuard` added and applied to 8 auth endpoints
+- [x] `@nestjs/platform-fastify` removed from `apps/api/package.json`
+- [x] Tenant service N+1 fix (`getUserStores` batched IN query)
+- [x] Tenant controller N+1 fix (`getMyStores` maps batched rows via `toStoreProfile()`)
+- [x] `BETTER_AUTH_URL` added to env schema, `.env.example`, `Environment-Specification.md`
+- [x] Better Auth `baseURL` wired from `BETTER_AUTH_URL`
+- [x] ADR-017 (UUID v7 strategy) authored
+- [x] ADR-018 (Analytics partitioning design) authored
+- [x] `docker/postgres/Dockerfile` builds `pg_uuidv7`; `docker-compose.yml` uses the new image
+- [x] `scripts/db-backup.mjs` + root `db:backup` / `db:restore` / `db:backup:list`
+- [x] `packages/auth/verify.mjs` Better Auth verifier + `verify` script
+- [x] Integration test foundation (`apps/api/test`) — 6 tests passing
+- [x] `GlobalExceptionFilter` envelope-preservation fix
+- [x] `docs/reports/PHASE_04_5_REPORT.md` written
 
 ## Phase 04 — Domain Data Foundation
 

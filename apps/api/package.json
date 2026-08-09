@@ -10,6 +10,7 @@
     "start:prod": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check src",
+    "test": "node --test \"test/**/*.test.mjs\"",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -22,7 +23,6 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/platform-fastify": "^10.0.0",
     "@nestjs/swagger": "^7.0.0",
     "better-auth": "^1.0.0",
     "class-transformer": "^0.5.1",

@@ -39,13 +39,27 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         message = exResponse
       } else if (typeof exResponse === 'object' && exResponse !== null) {
         const responseObj = exResponse as Record<string, unknown>
-        message = (responseObj.message as string) ?? message
-        // Map HttpException error strings to our ErrorCode
-        const rawCode = responseObj.error as string | undefined
-        if (rawCode && rawCode in ErrorCode) {
-          code = rawCode as ErrorCode
+
+        // Already-conformed API error envelope (e.g. ZodValidationPipe throws
+        // { success: false, error: { code, message } }). Preserve it verbatim.
+        const nestedError = responseObj.error
+        if (
+          typeof nestedError === 'object' &&
+          nestedError !== null &&
+          typeof (nestedError as Record<string, unknown>).code === 'string' &&
+          typeof (nestedError as Record<string, unknown>).message === 'string'
+        ) {
+          code = (nestedError as { code: string }).code as ErrorCode
+          message = (nestedError as { message: string }).message
         } else {
-          code = status === 404 ? ErrorCode.NOT_FOUND : ErrorCode.BAD_REQUEST
+          message = (responseObj.message as string) ?? message
+          // Map HttpException error strings to our ErrorCode
+          const rawCode = responseObj.error as string | undefined
+          if (rawCode && rawCode in ErrorCode) {
+            code = rawCode as ErrorCode
+          } else {
+            code = status === 404 ? ErrorCode.NOT_FOUND : ErrorCode.BAD_REQUEST
+          }
         }
       }
     }

@@ -1,17 +1,19 @@
 import type { AuthUser } from '@loom/types'
 import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-  ValidationPipe,
-} from '@nestjs/common'
+  changePasswordSchema,
+  loginSchema,
+  registerSchema,
+  requestPasswordResetSchema,
+  requestVerificationSchema,
+  resetPasswordSchema,
+  sellerRegisterSchema,
+  verifyEmailSchema,
+} from '@loom/validation'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
+import { RateLimitGuard } from '../../guards/rate-limit.guard.js'
+import { ZodValidationPipe } from '../../pipes/zod-validation.pipe.js'
 import { AuthGuard } from './auth.guard.js'
 import { AuthService } from './auth.service.js'
 
@@ -22,8 +24,15 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(new RateLimitGuard(5, 60))
   @ApiOperation({ summary: 'Register a new user account' })
-  async register(@Body(ValidationPipe) body: { email: string; password: string; name: string }) {
+  async register(
+    @Body(new ZodValidationPipe(registerSchema)) body: {
+      email: string
+      password: string
+      name: string
+    },
+  ) {
     const result = await this.authService.register(body.email, body.password, body.name)
 
     return {
@@ -34,9 +43,10 @@ export class AuthController {
 
   @Post('register/seller')
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(new RateLimitGuard(5, 60))
   @ApiOperation({ summary: 'Register a new seller account with store' })
   async registerSeller(
-    @Body(ValidationPipe) body: {
+    @Body(new ZodValidationPipe(sellerRegisterSchema)) body: {
       email: string
       password: string
       name: string
@@ -60,9 +70,10 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(new RateLimitGuard(10, 60))
   @ApiOperation({ summary: 'Sign in with email and password' })
   async login(
-    @Body(ValidationPipe) body: { email: string; password: string },
+    @Body(new ZodValidationPipe(loginSchema)) body: { email: string; password: string },
     @Req() req: Request,
   ) {
     const result = await this.authService.signIn(
@@ -109,8 +120,9 @@ export class AuthController {
 
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(new RateLimitGuard(10, 60))
   @ApiOperation({ summary: 'Verify email address with token' })
-  async verifyEmail(@Body(ValidationPipe) body: { token: string }) {
+  async verifyEmail(@Body(new ZodValidationPipe(verifyEmailSchema)) body: { token: string }) {
     const result = await this.authService.verifyEmail(body.token)
 
     return {
@@ -121,8 +133,11 @@ export class AuthController {
 
   @Post('verify-email/request')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(new RateLimitGuard(3, 60))
   @ApiOperation({ summary: 'Request email verification to be sent again' })
-  async requestEmailVerification(@Body(ValidationPipe) body: { email: string }) {
+  async requestEmailVerification(
+    @Body(new ZodValidationPipe(requestVerificationSchema)) body: { email: string },
+  ) {
     const result = await this.authService.requestEmailVerification(body.email)
 
     return {
@@ -133,8 +148,11 @@ export class AuthController {
 
   @Post('password/reset/request')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(new RateLimitGuard(3, 60))
   @ApiOperation({ summary: 'Request password reset email' })
-  async requestPasswordReset(@Body(ValidationPipe) body: { email: string }) {
+  async requestPasswordReset(
+    @Body(new ZodValidationPipe(requestPasswordResetSchema)) body: { email: string },
+  ) {
     const result = await this.authService.requestPasswordReset(body.email)
 
     return {
@@ -145,8 +163,11 @@ export class AuthController {
 
   @Post('password/reset')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(new RateLimitGuard(5, 60))
   @ApiOperation({ summary: 'Reset password with token' })
-  async resetPassword(@Body(ValidationPipe) body: { token: string; password: string }) {
+  async resetPassword(
+    @Body(new ZodValidationPipe(resetPasswordSchema)) body: { token: string; password: string },
+  ) {
     const result = await this.authService.resetPassword(body.token, body.password)
 
     return {
@@ -158,11 +179,15 @@ export class AuthController {
   @Post('password/change')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
+  @UseGuards(new RateLimitGuard(10, 60))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change password (authenticated user)' })
   async changePassword(
     @Req() req: Request,
-    @Body(ValidationPipe) body: { currentPassword: string; newPassword: string },
+    @Body(new ZodValidationPipe(changePasswordSchema)) body: {
+      currentPassword: string
+      newPassword: string
+    },
   ) {
     const token = this.extractToken(req)
     const result = await this.authService.changePassword(

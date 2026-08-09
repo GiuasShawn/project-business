@@ -1,8 +1,10 @@
 import { Permission } from '@loom/auth'
-import type { AuthUser, UpdateUserProfileDto, UserProfile } from '@loom/types'
+import type { AuthUser, UserProfile } from '@loom/types'
+import { updateProfileSchema } from '@loom/validation'
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
+import { ZodValidationPipe } from '../../pipes/zod-validation.pipe.js'
 import { RequirePermissions } from '../auth/auth.decorators.js'
 import { AuthGuard } from '../auth/auth.guard.js'
 import { PermissionsGuard } from '../auth/permissions.guard.js'
@@ -23,10 +25,9 @@ export class UserController {
    * Get current user's profile.
    */
   @Get('me')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, PermissionsGuard)
   @ApiBearerAuth()
   @RequirePermissions(Permission.PROFILE_READ)
-  @UseGuards(AuthGuard, PermissionsGuard)
   @ApiOperation({ summary: 'Get current user profile' })
   async getMe(@Req() req: Request): Promise<{ success: true; data: { user: UserProfile } }> {
     const authUser = (req as unknown as { authUser: AuthUser }).authUser
@@ -43,14 +44,14 @@ export class UserController {
    */
   @Patch('me')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, PermissionsGuard)
   @ApiBearerAuth()
   @RequirePermissions(Permission.PROFILE_WRITE)
-  @UseGuards(AuthGuard, PermissionsGuard)
   @ApiOperation({ summary: 'Update current user profile' })
   async updateMe(
     @Req() req: Request,
-    @Body() dto: UpdateUserProfileDto,
+    @Body(new ZodValidationPipe(updateProfileSchema))
+    dto: { name?: string; image?: string | null },
   ): Promise<{ success: true; data: { user: UserProfile } }> {
     const authUser = (req as unknown as { authUser: AuthUser }).authUser
     const profile = await this.userService.updateProfile(authUser, dto)

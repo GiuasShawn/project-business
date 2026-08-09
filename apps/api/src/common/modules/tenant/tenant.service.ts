@@ -8,7 +8,7 @@ import type {
   UpdateStoreDto,
 } from '@loom/types'
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 import { DatabaseService } from '../database/database.service.js'
 
 /**
@@ -54,14 +54,9 @@ export class TenantService {
   }
 
   /**
-   * Get store profile for API responses.
+   * Map a Store row to the API StoreProfile shape.
    */
-  async getStoreProfile(storeId: string): Promise<StoreProfile | null> {
-    const storeData = await this.getStoreById(storeId)
-    if (!storeData) {
-      return null
-    }
-
+  toStoreProfile(storeData: Store): StoreProfile {
     return {
       id: storeData.id,
       name: storeData.name,
@@ -74,6 +69,18 @@ export class TenantService {
       createdAt: storeData.createdAt,
       updatedAt: storeData.updatedAt,
     }
+  }
+
+  /**
+   * Get store profile for API responses.
+   */
+  async getStoreProfile(storeId: string): Promise<StoreProfile | null> {
+    const storeData = await this.getStoreById(storeId)
+    if (!storeData) {
+      return null
+    }
+
+    return this.toStoreProfile(storeData)
   }
 
   /**
@@ -96,6 +103,10 @@ export class TenantService {
 
   /**
    * Get all stores a user belongs to.
+   *
+   * Uses a batched IN query instead of N+1 loop per ADR-004 §"Repository Standards".
+   * Fetches all memberships in one query, then all stores in one batched query,
+   * then joins them in memory.
    */
   async getUserStores(
     userId: string,
@@ -106,16 +117,22 @@ export class TenantService {
       .from(storeMembership)
       .where(eq(storeMembership.userId, userId))
 
-    const stores: Array<{ store: Store; membership: StoreMembership }> = []
-
-    for (const membership of memberships) {
-      const storeData = await this.getStoreById(membership.storeId)
-      if (storeData) {
-        stores.push({ store: storeData, membership: membership as StoreMembership })
-      }
+    if (memberships.length === 0) {
+      return []
     }
 
-    return stores
+    const storeIds = memberships.map((m) => m.storeId)
+    const storesData = await db.select().from(store).where(inArray(store.id, storeIds))
+
+    const storeMap = new Map(storesData.map((s) => [s.id, s as Store]))
+
+    return memberships
+      .map((membership) => {
+        const storeData = storeMap.get(membership.storeId)
+        if (!storeData) return null
+        return { store: storeData, membership: membership as StoreMembership }
+      })
+      .filter((item): item is { store: Store; membership: StoreMembership } => item !== null)
   }
 
   /**

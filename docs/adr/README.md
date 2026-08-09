@@ -167,6 +167,8 @@ Examples:
 | ADR-014 | V1 User Roles (admin/seller/customer) and SUPER_ADMIN Deferral | Accepted |
 | ADR-015 | Store Status Initial State (`DRAFT`) | Accepted |
 | ADR-016 | Better Auth Persistence as Cross-Domain Primitives | Accepted |
+| ADR-017 | UUID v7 Primary Key Generation Strategy | Accepted |
+| ADR-018 | Analytics Events Partitioning Strategy (Design) | Accepted |
 
 ---
 

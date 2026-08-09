@@ -1,5 +1,6 @@
 import { Permission } from '@loom/auth'
-import type { AuthUser, CreateStoreDto, StoreProfile, UpdateStoreDto } from '@loom/types'
+import type { AuthUser, StoreProfile } from '@loom/types'
+import { createStoreSchema, updateStoreSchema } from '@loom/validation'
 import {
   Body,
   Controller,
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
+import { ZodValidationPipe } from '../../pipes/zod-validation.pipe.js'
 import { RequirePermissions } from '../auth/auth.decorators.js'
 import { AuthGuard } from '../auth/auth.guard.js'
 import { PermissionsGuard } from '../auth/permissions.guard.js'
@@ -46,7 +48,8 @@ export class TenantController {
   @ApiOperation({ summary: 'Create a new store' })
   async createStore(
     @Req() req: Request,
-    @Body() dto: CreateStoreDto,
+    @Body(new ZodValidationPipe(createStoreSchema))
+    dto: { name: string; slug: string; description?: string },
   ): Promise<{ success: true; data: { store: StoreProfile } }> {
     const authUser = (req as unknown as { authUser: AuthUser }).authUser
     const store = await this.tenantService.createStore(authUser, dto)
@@ -71,14 +74,12 @@ export class TenantController {
     const authUser = (req as unknown as { authUser: AuthUser }).authUser
     const userStores = await this.tenantService.getUserStores(authUser.id)
 
-    const stores: Array<{ store: StoreProfile; role: string }> = []
-
-    for (const item of userStores) {
-      const profile = await this.tenantService.getStoreProfile(item.store.id)
-      if (profile) {
-        stores.push({ store: profile, role: item.membership.role })
-      }
-    }
+    // getUserStores returns batched full Store rows — map them to profiles
+    // here instead of issuing a per-store query (avoids N+1).
+    const stores: Array<{ store: StoreProfile; role: string }> = userStores.map((item) => ({
+      store: this.tenantService.toStoreProfile(item.store),
+      role: item.membership.role,
+    }))
 
     return {
       success: true,
@@ -121,7 +122,8 @@ export class TenantController {
   async updateStore(
     @Req() req: Request,
     @Param('storeId') storeId: string,
-    @Body() dto: UpdateStoreDto,
+    @Body(new ZodValidationPipe(updateStoreSchema))
+    dto: { name?: string; description?: string; logo?: string | null; banner?: string | null },
   ): Promise<{ success: true; data: { store: StoreProfile } }> {
     const authUser = (req as unknown as { authUser: AuthUser }).authUser
     const store = await this.tenantService.updateStore(authUser, storeId, dto)

@@ -20,6 +20,9 @@
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
     "db:seed": "turbo db:seed",
+    "db:backup": "node scripts/db-backup.mjs backup",
+    "db:restore": "node scripts/db-backup.mjs restore",
+    "db:backup:list": "node scripts/db-backup.mjs list",
     "prepare": "husky"
   },
   "devDependencies": {

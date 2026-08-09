@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "verify": "node verify.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.0.0",

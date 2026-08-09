@@ -19,6 +19,41 @@
 
 # Completed Milestones
 
+## Phase 04.5 — Security & Correctness Hardening ✅
+
+**Completion Date:** 2026-08-09
+**Status:** Complete
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| ADR-017 — UUID v7 Primary Key Strategy | `docs/adr/ADR-017-UUID-v7-Strategy.md` | ✅ |
+| ADR-018 — Analytics Events Partitioning (Design) | `docs/adr/ADR-018-Analytics-Partitioning.md` | ✅ |
+| `ZodValidationPipe` wired into auth / user / tenant controllers | `apps/api/src/common/pipes/zod-validation.pipe.ts` + controllers | ✅ |
+| Rate limiting on 8 auth endpoints (`RateLimitGuard`) | `apps/api/src/common/guards/rate-limit.guard.ts` | ✅ |
+| N+1 eliminated in tenant reads (service + controller) | `apps/api/src/common/modules/tenant/tenant.service.ts` + `tenant.controller.ts` | ✅ |
+| `BETTER_AUTH_URL` base URL for Better Auth | `packages/config/src/env.ts`, `packages/auth/src/auth-config.ts` | ✅ |
+| Postgres image with `pg_uuidv7` extension | `docker/postgres/Dockerfile`, `docker/docker-compose.yml` | ✅ |
+| DB backup/restore helper (`db:backup` / `db:restore`) | `scripts/db-backup.mjs`, root `package.json` | ✅ |
+| Better Auth configuration verifier (`verify`) | `packages/auth/verify.mjs` | ✅ |
+| Integration test foundation (6 tests) | `apps/api/test/health.integration.test.mjs` | ✅ |
+| GlobalExceptionFilter fix (preserve conformed error envelopes) | `apps/api/src/common/filters/global-exception.filter.ts` | ✅ |
+| Phase 04.5 completion report | `docs/reports/PHASE_04_5_REPORT.md` | ✅ |
+
+### Validation
+
+| Check | Result |
+|-------|--------|
+| `pnpm typecheck` | ✅ 26/26 tasks |
+| `pnpm lint` | ✅ 153 files, 0 errors |
+| API integration tests | ✅ 6/6 pass |
+| Better Auth verifier | ✅ all 5 checks pass |
+| Architecture v1.0 | ✅ Unchanged |
+
+---
+
 ## Phase 04 — Domain Data Foundation ✅
 
 **Completion Date:** 2026-08-09
@@ -535,11 +570,11 @@ Seller Active
 
 # Upcoming Milestones
 
-## Phase 04 — Database
+## Phase 05 — Design System
 
 **Status:** Ready to Start
 **Estimated Effort:** Medium
-**Dependencies:** Phase 03D
+**Dependencies:** Phase 04
 
 ---
 
@@ -566,6 +601,8 @@ Seller Active
             ↓
 2026-08-09  Phase 04 — Domain Data Foundation ✅ (env-constrained)
             ↓
+2026-08-09  Phase 04.5 — Security & Correctness Hardening ✅
+            ↓
             ... (Phases 5-22)
             ↓
             Phase 22 — Polish ⏳ Pending
@@ -578,12 +615,12 @@ Seller Active
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 9 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D, Phase 04) |
+| Completed | 10 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D, Phase 04, Phase 04.5) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 13 |
-| Overall Progress | 41% |
-| Current Phase | Phase 04 — Domain Data Foundation (complete; awaiting dev-env DB verification) |
+| Pending | 12 |
+| Overall Progress | 45% |
+| Current Phase | Phase 04.5 — Security & Correctness Hardening (complete) |
 | Readiness Score | 92/100 |
 
 ---

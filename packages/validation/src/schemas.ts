@@ -69,3 +69,37 @@ export const sellerRegisterSchema = registerSchema.extend({
 })
 
 export type SellerRegisterInput = z.infer<typeof sellerRegisterSchema>
+
+/**
+ * User profile update schema
+ */
+export const updateProfileSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255).optional(),
+  image: z.string().url('Image must be a valid URL').nullable().optional(),
+})
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
+
+/**
+ * Store management schemas
+ */
+export const createStoreSchema = z.object({
+  name: z.string().min(1, 'Store name is required').max(255),
+  slug: z
+    .string()
+    .min(1, 'Store slug is required')
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, 'Store slug must contain only lowercase letters, numbers, and hyphens'),
+  description: z.string().max(2000).optional(),
+})
+
+export type CreateStoreInput = z.infer<typeof createStoreSchema>
+
+export const updateStoreSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  description: z.string().max(2000).optional(),
+  logo: z.string().url('Logo must be a valid URL').nullable().optional(),
+  banner: z.string().url('Banner must be a valid URL').nullable().optional(),
+})
+
+export type UpdateStoreInput = z.infer<typeof updateStoreSchema>
