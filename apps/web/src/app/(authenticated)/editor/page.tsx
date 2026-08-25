@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { EditorPreview } from '../../components/editor/editor-preview'
-import type { StorefrontState } from '../../components/editor/editor-sidebar'
-import { EditorSidebar } from '../../components/editor/editor-sidebar'
+import { EditorPreview } from '../../../components/editor/editor-preview'
+import type { StorefrontState } from '../../../components/editor/editor-sidebar'
+import { EditorSidebar } from '../../../components/editor/editor-sidebar'
 
 const INITIAL_STATE: StorefrontState = {
   storeName: 'STUDIO NOUVEAU',

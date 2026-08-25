@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@loom/api-client": "workspace:*",
+    "@loom/auth": "workspace:*",
     "@loom/ui": "workspace:*",
     "animejs": "^4.5.0",
+    "better-auth": "^1.0.0",
     "motion": "^13.0.0",
     "next": "^15.0.0",
     "react": "^19.0.0",

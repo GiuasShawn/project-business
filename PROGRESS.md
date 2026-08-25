@@ -19,6 +19,92 @@
 
 # Completed Milestones
 
+## Phase 06 — Application Shell ✅
+
+**Completion Date:** 2026-08-25
+**Status:** Complete
+**Duration:** 1 session
+
+### Deliverables
+
+| Deliverable | Location | Status |
+|-------------|----------|--------|
+| Shared globals.css | `packages/ui/src/globals.css` | ✅ |
+| Button with design tokens | `packages/ui/src/button.tsx` | ✅ |
+| Tailwind preset alignment | `apps/web/tailwind.config.ts` | ✅ |
+| Route restructuring | `apps/web/src/app/(public)`, `(auth)`, `(authenticated)` | ✅ |
+| Auth middleware | `apps/web/src/middleware.ts` | ✅ |
+| Better Auth route handler | `apps/web/src/app/api/auth/[...all]/route.ts` | ✅ |
+| Auth client with nextCookies | `apps/web/src/lib/auth.ts` | ✅ |
+| Authenticated shell | `apps/web/src/app/(authenticated)/layout.tsx` | ✅ |
+| aria-current navigation | `packages/ui/src/shell/nav-item.tsx` | ✅ |
+| Phase 06 report | `docs/reports/PHASE_06_REPORT.md` | ✅ |
+
+### Route Groups
+
+| Group | Routes | Auth Required |
+|-------|--------|---------------|
+| (public) | `/` | No |
+| (auth) | `/sign-in`, `/register`, `/forgot-password`, `/verify-email` | No (redirects if authenticated) |
+| (authenticated) | `/catalog`, `/editor` | Yes |
+
+### Validation Results
+
+| Check | Result |
+|-------|--------|
+| `pnpm build` | ✅ Pass |
+| `pnpm lint` | ✅ Pass |
+| `pnpm typecheck` | ✅ Pass |
+| Auth protection | ✅ /catalog, /editor redirect to /sign-in |
+| Authenticated access | ✅ Sidebar navigation works |
+| Public URLs preserved | ✅ All existing routes accessible |
+| Mobile navigation | ✅ Bottom nav works |
+| Reduced motion | ✅ No animations |
+| Console errors | ✅ None |
+
+### Files Created (8 new files)
+
+| File | Purpose |
+|------|---------|
+| `packages/ui/src/globals.css` | Shared global styles |
+| `apps/web/src/middleware.ts` | Auth boundary middleware |
+| `apps/web/src/app/api/auth/[...all]/route.ts` | Better Auth route handler |
+| `apps/web/src/lib/auth.ts` | Auth client with nextCookies |
+| `apps/web/src/app/(public)/layout.tsx` | Public route group layout |
+| `apps/web/src/app/(auth)/layout.tsx` | Auth route group layout |
+| `apps/web/src/app/(authenticated)/layout.tsx` | Authenticated shell layout |
+| `docs/reports/PHASE_06_REPORT.md` | Phase 06 completion report |
+
+### Files Modified (15 files)
+
+| File | Changes |
+|------|---------|
+| `packages/ui/package.json` | Added globals.css export |
+| `packages/ui/src/button.tsx` | Updated with Loom design tokens |
+| `packages/ui/src/shell/nav-item.tsx` | Added aria-current="page" |
+| `apps/web/package.json` | Added @loom/auth dependency |
+| `apps/web/tailwind.config.ts` | Aligned with @loom/ui/tailwind-preset |
+| `apps/web/src/app/layout.tsx` | Changed to import @loom/ui/globals.css |
+| `apps/web/src/app/page.tsx` | Moved to (public) route group |
+| `apps/web/src/app/sign-in/page.tsx` | Moved to (auth) route group |
+| `apps/web/src/app/register/page.tsx` | Moved to (auth) route group |
+| `apps/web/src/app/forgot-password/page.tsx` | Moved to (auth) route group |
+| `apps/web/src/app/verify-email/page.tsx` | Moved to (auth) route group |
+| `apps/web/src/app/catalog/page.tsx` | Moved to (authenticated) route group |
+| `apps/web/src/app/editor/page.tsx` | Moved to (authenticated) route group |
+| `apps/admin-dashboard/src/app/layout.tsx` | Changed to import @loom/ui/globals.css |
+| `apps/seller-dashboard/src/app/layout.tsx` | Changed to import @loom/ui/globals.css |
+
+### Architecture Decisions
+
+1. **Route Groups**: Used Next.js route groups `(public)`, `(auth)`, `(authenticated)` to organize routes without affecting URLs.
+2. **Middleware-based Auth**: Implemented auth check at the middleware level for consistent protection across all authenticated routes.
+3. **Cookie-based Session**: Used Better Auth's `loom_session` cookie (configured via `cookiePrefix: 'loom'` in auth-config.ts).
+4. **Shell Components**: Reused existing @loom/ui shell components (Shell, Sidebar, TopBar, MobileNav) for the authenticated layout.
+5. **Design Token Alignment**: apps/web now extends @loom/ui/tailwind-preset instead of duplicating tokens.
+
+---
+
 ## Phase 04.5 — Security & Correctness Hardening ✅
 
 **Completion Date:** 2026-08-09
@@ -616,7 +702,9 @@ Seller Active
             ↓
 2026-08-09  Phase 05 — Design System ✅
             ↓
-            ... (Phases 6-22)
+2026-08-25  Phase 06 — Application Shell ✅
+            ↓
+            ... (Phases 7-22)
             ↓
             Phase 22 — Polish ⏳ Pending
 ```
@@ -628,12 +716,12 @@ Seller Active
 | Metric | Value |
 |--------|-------|
 | Total Phases | 22 |
-| Completed | 11 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D, Phase 04, Phase 04.5, Phase 05) |
+| Completed | 12 (Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 03A, Phase 03B, Phase 03C, Phase 03D, Phase 04, Phase 04.5, Phase 05, Phase 06) |
 | Architecture Review | Complete (v1.0 Frozen) |
 | In Progress | 0 |
-| Pending | 11 |
-| Overall Progress | 50% |
-| Current Phase | Phase 05 — Design System (complete) |
+| Pending | 10 |
+| Overall Progress | 55% |
+| Current Phase | Phase 06 — Application Shell (complete) |
 | Readiness Score | 92/100 |
 
 ---
@@ -654,7 +742,8 @@ Seller Active
 | 2026-08-09 | Phase 04 | Completed | Domain data foundation; cross-domain primitives; first migration |
 | 2026-08-09 | Phase 04.5 | Completed | Security & correctness hardening |
 | 2026-08-09 | Phase 05 | Completed | Design system: 7 UI primitives, Material 3 tokens, motion, responsive, accessibility, editor route, DESIGN.md |
+| 2026-08-25 | Phase 06 | Completed | Application shell: shared globals.css, Button with design tokens, Tailwind preset, route restructuring, auth boundary, authenticated shell, aria-current navigation |
 
 ---
 
-*Last Updated: 2026-08-09*
+*Last Updated: 2026-08-25*

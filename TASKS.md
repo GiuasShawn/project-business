@@ -16,7 +16,7 @@
 
 **Current Phase**
 
-> Phase 05 — Design System (Complete)
+> Phase 06 — Application Shell (Complete)
 
 **Overall Progress**
 
@@ -24,11 +24,11 @@
 
 **Status**
 
-> 🟢 Phase 05 Complete — Design system implemented in apps/web: 7 UI primitives, Material 3 tokens, motion system, responsive layouts, accessibility. Root lint/typecheck/build pass. All 8 routes render. Reduced-motion verified.
+> 🟢 Phase 06 Complete — Application shell implemented: shared globals.css, Button with design tokens, Tailwind preset alignment, route restructuring, auth boundary, authenticated shell, aria-current navigation. All validation passes.
 
 **Current Milestone**
 
-> Design System Complete
+> Application Shell Complete
 
 ---
 
@@ -76,6 +76,19 @@ Environment constraint: the agent runtime used to land Phase 04/04.5 has Docker 
 - [x] Integration test foundation (`apps/api/test`) — 6 tests passing
 - [x] `GlobalExceptionFilter` envelope-preservation fix
 - [x] `docs/reports/PHASE_04_5_REPORT.md` written
+
+## Phase 06 — Application Shell
+
+- [x] Extract shared globals.css into packages/ui
+- [x] Fix packages/ui Button with Loom design tokens
+- [x] Align apps/web with @loom/ui/tailwind-preset
+- [x] Restructure apps/web routes into (public), (auth), (authenticated)
+- [x] Implement auth boundary (middleware.ts, Better Auth route handler, nextCookies)
+- [x] Add @loom/auth workspace dependency to apps/web
+- [x] Protect /catalog and /editor routes
+- [x] Implement authenticated apps/web shell with catalog sidebar
+- [x] Add aria-current="page" to active shared navigation
+- [x] Update documentation (PHASES.md, TASKS.md, PROGRESS.md, PHASE_06_REPORT.md)
 
 ## Phase 05 — Design System
 
@@ -530,7 +543,7 @@ Before Phase 04 is complete:
 
 # Next Phase
 
-Phase 04 — Database
+Phase 07 — Shared Components
 
 ---
 

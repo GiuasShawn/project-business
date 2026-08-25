@@ -317,20 +317,25 @@ Middleware
 
 # Phase 6 — Application Shell
 
-**Status:** Pending
+**Status:** Complete
 
 **Goal:** Complete application shell with navigation.
 
 **Tasks**
-- [ ] Routing
-- [ ] Sidebar
-- [ ] Navbar
-- [ ] Dashboard layout
-- [ ] Dark mode
-- [ ] Responsive navigation
+- [x] Shared globals.css extracted into packages/ui
+- [x] packages/ui Button fixed with real Loom design tokens
+- [x] apps/web aligned with @loom/ui/tailwind-preset
+- [x] apps/web routes restructured into (public), (auth), (authenticated)
+- [x] Auth boundary implemented (middleware, Better Auth, nextCookies)
+- [x] Authenticated apps/web shell with catalog sidebar implemented
+- [x] aria-current="page" added to active shared navigation
+- [x] Documentation updated (PHASES.md, TASKS.md, PROGRESS.md, PHASE_06_REPORT.md)
 
 **Validation**
-- [ ] Navigation works
+- [x] Navigation works
+- [x] Auth protection works (/catalog, /editor redirect to /sign-in when unauthenticated)
+- [x] Authenticated access works (sidebar navigation, top bar)
+- [x] All existing public URLs preserved
 
 ---
 
