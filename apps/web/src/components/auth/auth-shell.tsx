@@ -1,8 +1,9 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import type React from 'react'
+import { useEffect, useState } from 'react'
 import { EASE_OUT } from '../../lib/motion'
 import { Wordmark } from '../ui/wordmark'
 
@@ -17,6 +18,12 @@ export interface AuthShellProps {
  * Shared auth layout: centered card with the LOOM wordmark, a restrained
  * entrance, and a quiet background. Preserves the Stitch sign-in direction
  * (simple, clean, focused, responsive).
+ *
+ * SSR-safe reduced-motion handling: uses useState(false) as the initial
+ * value (deterministic between server and client), then updates via
+ * useEffect after hydration based on the actual prefers-reduced-motion
+ * preference. This eliminates hydration mismatches while still respecting
+ * user motion preferences.
  */
 export function AuthShell({
   title,
@@ -24,7 +31,16 @@ export function AuthShell({
   children,
   footer,
 }: AuthShellProps): React.JSX.Element {
-  const reduceMotion = useReducedMotion()
+  const [reduceMotion, setReduceMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReduceMotion(mq.matches)
+
+    const handler = (e: MediaQueryListEvent): void => setReduceMotion(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   return (
     <main className="relative min-h-dvh overflow-hidden bg-background">

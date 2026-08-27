@@ -1,16 +1,76 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { type FormEvent, useState } from 'react'
+import { authClient } from '../../lib/auth'
 import { Button } from '../ui/button'
 import { Icon } from '../ui/icon'
 import { Input } from '../ui/input'
 import { AuthShell } from './auth-shell'
 
 /**
- * Registration demo screen — mirrors the Better Auth registration flow
- * (email + password + name + terms). No invented functionality.
+ * Registration form wired to Better Auth signUp.email().
+ * Handles form state, validation, API errors, and redirect on success.
  */
 export function RegisterPage(): React.JSX.Element {
+  const router = useRouter()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+
+    // Client-side validation
+    if (!name.trim() || !email.trim() || !password) {
+      setError('All fields are required.')
+      return
+    }
+    if (password.length < 12) {
+      setError('Password must be at least 12 characters.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+    if (!agreedToTerms) {
+      setError('You must agree to the Terms of Service and Privacy Policy.')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const { data, error: authError } = await authClient.signUp.email({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        callbackURL: '/catalog',
+      })
+
+      if (authError) {
+        setError(authError.message || 'Registration failed. Please try again.')
+        return
+      }
+
+      // Success — redirect to catalog (session cookie is set by Better Auth)
+      if (data) {
+        router.push('/catalog')
+      }
+    } catch {
+      setError('An unexpected error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <AuthShell
       title="Create your account"
@@ -27,21 +87,32 @@ export function RegisterPage(): React.JSX.Element {
         </p>
       }
     >
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-        <Input label="Full name" name="name" autoComplete="name" placeholder="Aarav Mehta" />
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        <Input
+          label="Full name"
+          name="name"
+          autoComplete="name"
+          placeholder="Aarav Mehta"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <Input
           label="Email"
           type="email"
           name="email"
           autoComplete="email"
           placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <Input
           label="Password"
           type="password"
           name="password"
           autoComplete="new-password"
-          placeholder="••••••••"
+          placeholder="Min. 12 characters"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Input
           label="Confirm password"
@@ -49,19 +120,31 @@ export function RegisterPage(): React.JSX.Element {
           name="confirmPassword"
           autoComplete="new-password"
           placeholder="••••••••"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
         <label className="flex items-start gap-2 text-body-sm text-on-surface-variant">
           <input
             type="checkbox"
             className="mt-0.5 h-3.5 w-3.5 rounded-sm border-outline-variant bg-surface"
+            checked={agreedToTerms}
+            onChange={(e) => setAgreedToTerms(e.target.checked)}
           />
           <span>
             I agree to the <span className="text-on-surface underline">Terms of Service</span> and{' '}
             <span className="text-on-surface underline">Privacy Policy</span>.
           </span>
         </label>
-        <Button type="submit" size="lg" className="w-full">
-          Create Account
+
+        {error && (
+          <p className="text-body-sm text-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating account…' : 'Create Account'}
         </Button>
       </form>
 

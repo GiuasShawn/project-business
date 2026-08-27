@@ -8,7 +8,8 @@ import type { NextRequest } from 'next/server'
  * the Better Auth session cookie. Unauthenticated users are redirected
  * to /sign-in with a callback URL.
  *
- * Better Auth cookie name: loom_session (configured via cookiePrefix: 'loom'
+ * Better Auth cookie name: loom.session_token
+ * (configured via cookiePrefix: 'loom' + default 'session_token'
  * in packages/auth/src/auth-config.ts).
  *
  * This middleware runs at the edge runtime and cannot import Node.js-only
@@ -17,7 +18,7 @@ import type { NextRequest } from 'next/server'
  * Full session validation happens in the authenticated layout.
  */
 
-const SESSION_COOKIE_NAME = 'loom_session'
+const SESSION_COOKIE_NAME = 'loom.session_token'
 
 /** Routes that require authentication. */
 const protectedRoutes = ['/catalog', '/editor']

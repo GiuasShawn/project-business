@@ -1,8 +1,8 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import type React from 'react'
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import { EASE_OUT } from '../../lib/motion'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
@@ -40,6 +40,12 @@ const sizeClasses: Record<ButtonSize, string> = {
  * Loom button. Rounded to 4px (architectural, not "rounded web"), label-caps
  * type, uppercase tracking. Press feedback is a subtle scale via Motion;
  * reduced-motion users get the press without the transform.
+ *
+ * SSR-safe reduced-motion handling: uses useState(false) as the initial
+ * value (deterministic between server and client), then updates via
+ * useEffect after hydration based on the actual prefers-reduced-motion
+ * preference. Explicit tabIndex={0} ensures server/client attribute parity
+ * since whileTap adds tabIndex for keyboard accessibility.
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
@@ -49,11 +55,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     className = '',
     children,
     disabled,
+    tabIndex,
     ...props
   },
   ref,
 ) {
-  const reduceMotion = useReducedMotion()
+  const [reduceMotion, setReduceMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReduceMotion(mq.matches)
+
+    const handler = (e: MediaQueryListEvent): void => setReduceMotion(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   return (
     <motion.button
       ref={ref}
@@ -61,6 +78,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       whileTap={reduceMotion ? undefined : { scale: 0.98 }}
       transition={{ duration: 0.18, ease: EASE_OUT }}
       disabled={disabled || isLoading}
+      tabIndex={tabIndex ?? 0}
       className={`inline-flex items-center justify-center gap-2 rounded font-label-caps text-label-caps uppercase tracking-widest transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >

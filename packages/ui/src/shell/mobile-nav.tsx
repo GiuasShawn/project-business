@@ -35,7 +35,7 @@ export function MobileNav({ items, className = '' }: MobileNavProps): React.JSX.
     >
       {items.map((item) => (
         <a
-          key={item.href}
+          key={item.label}
           href={item.href}
           className={`flex flex-1 flex-col items-center gap-0.5 py-2 transition-colors duration-150 ${
             item.active ? 'text-tertiary' : 'text-on-surface-variant hover:text-on-surface'

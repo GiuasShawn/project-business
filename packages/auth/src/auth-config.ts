@@ -53,7 +53,7 @@ export const authInstance = betterAuth({
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
   },
-  trustedOrigins: [env.API_URL],
+  trustedOrigins: [env.APP_URL, env.API_URL],
   advanced: {
     cookiePrefix: 'loom',
     secureCookies: env.NODE_ENV === 'production',
@@ -61,6 +61,9 @@ export const authInstance = betterAuth({
       httpOnly: true,
       secure: env.NODE_ENV === 'production',
       sameSite: 'lax',
+    },
+    database: {
+      generateId: 'uuid',
     },
   },
 })

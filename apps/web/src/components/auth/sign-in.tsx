@@ -1,20 +1,62 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { type FormEvent, useState } from 'react'
+import { authClient } from '../../lib/auth'
 import { Button } from '../ui/button'
 import { Icon } from '../ui/icon'
 import { Input } from '../ui/input'
 import { AuthShell } from './auth-shell'
 
 /**
- * Sign-in form. Static demo bound to the existing Better Auth backend flows
- * (sign in / registration / Google OAuth / password recovery / verification).
- * No authentication functionality is invented here — wiring to the API lands
- * in the authentication integration phase.
+ * Sign-in form wired to Better Auth signIn.email().
+ * Handles form state, API errors, loading state, and redirect on success.
  */
 export function SignInPage(): React.JSX.Element {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+
+    // Client-side validation
+    if (!email.trim() || !password) {
+      setError('Email and password are required.')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const { data, error: authError } = await authClient.signIn.email({
+        email: email.trim(),
+        password,
+        rememberMe,
+        callbackURL: '/catalog',
+      })
+
+      if (authError) {
+        setError(authError.message || 'Sign in failed. Please check your credentials.')
+        return
+      }
+
+      // Success — redirect to catalog (session cookie is set by Better Auth)
+      if (data) {
+        router.push('/catalog')
+      }
+    } catch {
+      setError('An unexpected error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <AuthShell
@@ -32,13 +74,15 @@ export function SignInPage(): React.JSX.Element {
         </p>
       }
     >
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <Input
           label="Email"
           type="email"
           name="email"
           autoComplete="email"
           placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <div className="relative">
           <label
@@ -52,6 +96,8 @@ export function SignInPage(): React.JSX.Element {
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded border border-outline-variant bg-surface px-4 py-3 pr-10 font-body-lg text-body-lg text-on-surface transition-colors outline-none placeholder:text-on-surface-variant/50 focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container"
           />
           <button
@@ -68,6 +114,8 @@ export function SignInPage(): React.JSX.Element {
             <input
               type="checkbox"
               className="h-3.5 w-3.5 rounded-sm border-outline-variant bg-surface"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
             />
             Remember me
           </label>
@@ -78,8 +126,15 @@ export function SignInPage(): React.JSX.Element {
             Forgot password?
           </Link>
         </div>
-        <Button type="submit" size="lg" className="w-full">
-          Sign In
+
+        {error && (
+          <p className="text-body-sm text-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? 'Signing in…' : 'Sign In'}
         </Button>
       </form>
 

@@ -40,7 +40,10 @@ const envSchema = z.object({
   R2_BUCKET: z.string().optional(),
   R2_ACCESS_KEY: z.string().optional(),
   R2_SECRET_KEY: z.string().optional(),
-  R2_PUBLIC_URL: z.string().url().optional(),
+  R2_PUBLIC_URL: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.string().url().optional(),
+  ),
 
   // Search (Meilisearch)
   MEILISEARCH_URL: z.string().url().default('http://localhost:7700'),
@@ -73,8 +76,14 @@ const envSchema = z.object({
   POSTHOG_HOST: z.string().url().default('https://app.posthog.com'),
 
   // Monitoring
-  SENTRY_DSN: z.string().url().optional(),
-  OTEL_EXPORTER_ENDPOINT: z.string().url().optional(),
+  SENTRY_DSN: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.string().url().optional(),
+  ),
+  OTEL_EXPORTER_ENDPOINT: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.string().url().optional(),
+  ),
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
 
   // Feature Flags

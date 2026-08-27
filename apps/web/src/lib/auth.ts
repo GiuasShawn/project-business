@@ -1,24 +1,25 @@
 import { createAuthClient } from 'better-auth/client'
-import { nextCookies } from 'better-auth/next-js'
 
 /**
  * Better Auth client for apps/web.
  *
- * Provides client-side authentication utilities including:
+ * Browser-safe client-side authentication utilities including:
  * - Session management
  * - Sign-in/sign-out
  * - OAuth callbacks
  *
- * The nextCookies() plugin enables cookie-based session management
- * in Next.js App Router, ensuring cookies are properly set and read
- * across server and client components.
+ * IMPORTANT: This module must NOT import nextCookies() or any server-only
+ * Better Auth modules. The nextCookies() plugin is server-only and causes
+ * webpack crashes (__webpack_modules__[moduleId] is not a function) when
+ * bundled into the client.
  *
  * @see packages/auth/src/auth-config.ts for server-side configuration.
  */
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
-  plugins: [nextCookies()],
+  // Use empty string for same-origin requests to /api/auth/*.
+  // Better Auth client uses relative URLs by default when baseURL is empty.
+  baseURL: process.env.NEXT_PUBLIC_API_URL || '',
 })
 
 /**
