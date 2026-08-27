@@ -1,107 +1,120 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
-import { fadeUp, staggerContainer } from '../../lib/motion'
-import { SiteNav } from '../site-nav'
-import { Button } from '../ui/button'
-import { Icon } from '../ui/icon'
-import { CatalogWall } from './catalog-wall'
 
 /**
- * Loom landing page.
+ * Loom landing page — pixel-matched to the Stitch reference.
  *
- * Background: the continuous catalog wall (Anime.js) with a tonal overlay so
- * the hero stays readable. Foreground: restrained Motion entrance for the
- * logo, headline, copy, and CTAs — calm foreground, alive background.
+ * Layout: two-column grid. Left column: tagline, headline, description, CTAs, stats.
+ * Right column: full-height hero image with gradient overlay.
+ * Footer: brand, copyright, legal links.
  */
 export function LandingPage(): React.JSX.Element {
-  const reduceMotion = useReducedMotion()
-
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Background — catalog wall + contrast overlay */}
-      <div className="fixed inset-0 z-0">
-        <CatalogWall />
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-background/85 via-background/50 to-background/90" />
-        <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(14,14,17,0.55)_75%,rgba(14,14,17,0.9)_100%)]" />
-      </div>
-
-      {/* Navigation */}
-      <SiteNav />
-
-      {/* Foreground hero */}
-      <main className="relative z-20 flex min-h-screen flex-col items-center justify-center px-grid-gutter pt-24 pb-stack-lg text-center sm:px-grid-margin">
-        <motion.div
-          variants={staggerContainer}
-          initial={reduceMotion ? false : 'hidden'}
-          animate="visible"
-          className="flex max-w-3xl flex-col items-center gap-stack-lg rounded-xl border border-white/10 bg-surface/40 p-stack-lg backdrop-blur-xl md:p-12"
-        >
-          <motion.p
-            variants={fadeUp}
-            className="border-l-2 border-primary pl-3 font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant"
-          >
-            Premium Distributed Commerce
-          </motion.p>
-
-          <motion.h1
-            variants={fadeUp}
-            className="font-display text-display-lg-mobile font-bold tracking-tighter text-on-surface md:text-display-lg"
-          >
+    <div className="bg-surface-container-low text-on-surface min-h-screen flex flex-col overflow-x-hidden">
+      {/* Header */}
+      <header className="border-b border-surface-variant bg-surface-container-low text-primary fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 transition-all duration-300 ease-in-out">
+        <div className="flex items-center gap-12">
+          <span className="font-display text-headline-md font-bold tracking-tight text-primary">
             LOOM
-          </motion.h1>
-
-          <motion.h2
-            variants={fadeUp}
-            className="max-w-2xl font-display text-headline-md font-semibold text-on-surface-variant"
+          </span>
+          <nav className="hidden md:flex gap-8" />
+        </div>
+        <div className="flex items-center gap-6">
+          <Link
+            href="/sign-in"
+            className="text-on-surface-variant hover:text-primary transition-colors font-medium hidden md:block"
           >
-            The Future of Distributed Commerce.
-          </motion.h2>
-
-          <motion.p
-            variants={fadeUp}
-            className="max-w-xl font-body text-body-lg leading-relaxed text-on-surface-variant opacity-90"
+            Sign In
+          </Link>
+          <Link
+            href="/register"
+            className="bg-primary text-on-primary px-5 py-2 rounded-lg font-medium hover:bg-surface-tint transition-colors"
           >
-            Discover products, curate your catalog, and launch your business with a single click.
-            Loom connects sellers to a premium product network with transparent commission-driven
-            growth.
-          </motion.p>
+            Start Selling
+          </Link>
+        </div>
+      </header>
 
-          <motion.div
-            variants={fadeUp}
-            className="flex w-full flex-col justify-center gap-stack-md sm:w-auto sm:flex-row"
-          >
-            <Link href="/register" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto">
+      {/* Hero */}
+      <main className="flex-grow flex items-center relative z-10 px-8 pt-24 pb-12 min-h-screen">
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+          {/* Left content */}
+          <div className="flex flex-col items-start gap-8 max-w-xl">
+            <div className="inline-flex items-center gap-3">
+              <div className="w-8 h-px bg-primary" />
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <h1 className="font-display text-display-lg text-primary">
+                The Future of Distributed Commerce.
+              </h1>
+              <p className="text-on-surface-variant text-lg leading-relaxed">
+                Discover premium products, curate your perfect catalog, and launch your business
+                with a single click. Loom connects visionary sellers to a global product network
+                with transparent, commission-driven growth.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 mt-2 w-full sm:w-auto">
+              <Link
+                href="/register"
+                className="bg-primary text-on-primary px-8 py-3.5 rounded-lg font-medium hover:bg-surface-tint transition-colors w-full sm:w-auto"
+              >
                 Get Started
-              </Button>
-            </Link>
-            <Link href="/sign-in" className="w-full sm:w-auto">
-              <Button size="lg" variant="ghost" className="w-full sm:w-auto">
-                Sign In
-              </Button>
-            </Link>
-          </motion.div>
+              </Link>
+              <Link
+                href="/catalog"
+                className="bg-surface-container text-primary px-8 py-3.5 rounded-lg font-medium hover:bg-surface-container-high transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+              >
+                Explore Catalog
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
+            </div>
 
-          {/* Mobile flavor from Stitch: compact feature tiles */}
-          <motion.div
-            variants={fadeUp}
-            className="mt-stack-md grid w-full grid-cols-2 gap-stack-sm md:hidden"
-          >
-            <div className="flex flex-col items-start rounded-lg border border-outline-variant bg-surface-container-low p-4">
-              <Icon name="view_cozy" size={20} filled className="mb-2 text-primary" />
-              <span className="font-label-caps text-label-caps text-on-surface">Curated Grids</span>
+            <div className="mt-8 pt-8 border-t border-surface-variant w-full flex items-center gap-8 opacity-70">
+              <div className="flex flex-col">
+                <span className="text-primary font-bold text-xl">10k+</span>
+                <span className="text-on-surface-variant text-sm">Premium Brands</span>
+              </div>
+              <div className="w-px h-8 bg-surface-variant" />
+              <div className="flex flex-col">
+                <span className="text-primary font-bold text-xl">$50M+</span>
+                <span className="text-on-surface-variant text-sm">Seller Earnings</span>
+              </div>
             </div>
-            <div className="flex flex-col items-start rounded-lg border border-outline-variant bg-surface-container-low p-4">
-              <Icon name="analytics" size={20} filled className="mb-2 text-primary" />
-              <span className="font-label-caps text-label-caps text-on-surface">
-                Advanced Metrics
-              </span>
-            </div>
-          </motion.div>
-        </motion.div>
+          </div>
+
+          {/* Right image */}
+          <div className="relative w-full h-[500px] lg:h-[700px] rounded-2xl overflow-hidden shadow-2xl">
+            <img
+              alt="Sophisticated black bodycon dress on a model in a minimalist studio setting"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTvwnTGV_XvlzytU0ReM6jlEok512waPW1j2Tx9-j8c7g0cYhA0TrPKY44GZ-PT2PIrugr-Er4Jg7ml2S3NO89y5rEPWrFf0XWk0_GPgxSVFfcdhD4l3sWyo4zFEPL6yw6PBlQBh4KBBJsp5HREwDjlfkiaCys4mouiV9yWBaQHlSqaNAwV25wEyB-P5w2-zTRM_UiHb57aHP7Jmajbqf_OE_FpPNXwqO_erEDdPjv2ZPzbszJM1ASRw"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low/80 via-transparent to-transparent" />
+          </div>
+        </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-surface-container-low text-on-surface-variant w-full py-12 border-t border-surface-variant relative z-10 flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto transition-colors duration-200 gap-6">
+        <div className="font-display text-primary text-xl font-bold" />
+        <div className="text-on-surface-variant">
+          &copy; 2026 LOOM Commerce. All rights reserved.
+        </div>
+        <div className="flex gap-6">
+          <a className="hover:text-primary transition-colors" href="/privacy">
+            Privacy Policy
+          </a>
+          <a className="hover:text-primary transition-colors" href="/terms">
+            Terms of Service
+          </a>
+          <a className="hover:text-primary transition-colors" href="/legal">
+            Legal
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }
