@@ -1,11 +1,10 @@
 'use client'
 
+import { EASE_OUT, Wordmark } from '@loom/ui'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { EASE_OUT } from '../../lib/motion'
-import { Wordmark } from '../ui/wordmark'
 
 export interface AuthShellProps {
   title: string

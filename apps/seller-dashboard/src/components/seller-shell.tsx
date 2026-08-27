@@ -1,6 +1,6 @@
 'use client'
 
-import { NavGroup, type NavItemData, Shell, ShellProvider, Sidebar, TopBar } from '@loom/ui'
+import { Icon, NavGroup, type NavItemData, Shell, ShellProvider, Sidebar, TopBar } from '@loom/ui'
 import type React from 'react'
 
 /**
@@ -37,13 +37,7 @@ function SellerTopBarActions(): React.JSX.Element {
         className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
         aria-label="Notifications"
       >
-        <span
-          aria-hidden
-          className="material-symbols-outlined select-none"
-          style={{ fontSize: 20 }}
-        >
-          notifications
-        </span>
+        <Icon name="notifications" size={20} />
       </button>
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-tertiary-container text-tertiary">
         <span className="font-label-caps text-xs">S</span>

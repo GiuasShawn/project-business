@@ -1,6 +1,8 @@
 'use client'
 
 import { useShell } from '@loom/ui'
+import { Icon } from '@loom/ui'
+import { EASE_OUT } from '@loom/ui'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -13,7 +15,6 @@ import {
   formatINR,
   sortOptions,
 } from '../../lib/catalog-data'
-import { EASE_OUT } from '../../lib/motion'
 import { ProductCard } from './product-card'
 
 interface Filters {
@@ -75,7 +76,7 @@ function FilterControls({
   return (
     <div className="space-y-6">
       <section>
-        <h3 className="mb-3 font-label-sm text-xs uppercase tracking-wider text-on-surface-variant">
+        <h3 className="mb-3 font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">
           Category
         </h3>
         <div className="space-y-1">
@@ -98,7 +99,7 @@ function FilterControls({
       </section>
 
       <section>
-        <h3 className="mb-3 font-label-sm text-xs uppercase tracking-wider text-on-surface-variant">
+        <h3 className="mb-3 font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">
           Commission Rate
         </h3>
         <div className="space-y-1">
@@ -121,7 +122,7 @@ function FilterControls({
       </section>
 
       <section>
-        <h3 className="mb-3 font-label-sm text-xs uppercase tracking-wider text-on-surface-variant">
+        <h3 className="mb-3 font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant">
           Price Range (MRP)
         </h3>
         <div className="grid grid-cols-2 gap-3">
@@ -186,14 +187,14 @@ function FeaturedProduct({
       {/* Content overlay */}
       <div className="absolute inset-0 p-8 flex flex-col justify-between z-10 pointer-events-none">
         <div>
-          <h2 className="font-display-lg text-display-lg text-primary mb-2">{product.name}</h2>
-          <p className="font-title-md text-title-md text-on-surface-variant">{product.brand}</p>
+          <h2 className="font-display text-display-lg text-primary mb-2">{product.name}</h2>
+          <p className="font-body text-body-lg text-on-surface-variant">{product.brand}</p>
         </div>
         <div className="flex justify-between items-end">
-          <span className="font-headline-lg text-headline-lg text-primary">
+          <span className="font-data-mono text-headline-lg text-primary">
             {formatINR(product.price)}
           </span>
-          <span className="font-label-sm text-label-sm text-on-surface-variant">
+          <span className="font-label-caps text-label-caps text-on-surface-variant">
             {product.commissionRate}% COMMISSION
           </span>
         </div>
@@ -274,17 +275,13 @@ export function CatalogPage(): React.JSX.Element {
               className="flex h-10 w-10 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface lg:hidden"
               aria-label="Open navigation menu"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: 24 }}>
-                menu
-              </span>
+              <Icon name="menu" size={24} />
             </button>
 
             {/* Search input */}
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <span className="material-symbols-outlined text-on-surface-variant text-xl">
-                  search
-                </span>
+                <Icon name="search" size={20} className="text-on-surface-variant" />
               </div>
               <input
                 type="search"
@@ -306,7 +303,7 @@ export function CatalogPage(): React.JSX.Element {
                 onClick={() => setFilterOpen((v) => !v)}
                 className="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-lg hover:bg-surface-container-highest transition-colors"
               >
-                <span className="font-label-sm text-label-sm text-on-surface font-bold">
+                <span className="font-label-caps text-label-caps text-on-surface font-bold">
                   FILTERS
                 </span>
                 {activeFilterCount > 0 ? (
@@ -314,9 +311,7 @@ export function CatalogPage(): React.JSX.Element {
                     {activeFilterCount}
                   </span>
                 ) : null}
-                <span className="material-symbols-outlined text-sm text-on-surface-variant">
-                  tune
-                </span>
+                <Icon name="tune" size={16} className="text-on-surface-variant" />
               </button>
 
               {/* Filter popover */}
@@ -330,7 +325,7 @@ export function CatalogPage(): React.JSX.Element {
                     className="absolute right-0 z-50 mt-3 w-[320px] rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-2xl"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="font-headline-lg text-lg font-bold text-on-surface">
+                      <h2 className="font-display text-headline-lg font-bold text-on-surface">
                         Filters
                       </h2>
                       <button
@@ -348,7 +343,7 @@ export function CatalogPage(): React.JSX.Element {
                       <button
                         type="button"
                         onClick={() => setFilterOpen(false)}
-                        className="w-full rounded-lg bg-on-surface py-2.5 font-label-sm text-label-sm uppercase tracking-wider text-surface font-bold hover:opacity-90 transition-opacity"
+                        className="w-full rounded-lg bg-on-surface py-2.5 font-label-caps text-label-caps uppercase tracking-wider text-surface font-bold hover:opacity-90 transition-opacity"
                       >
                         Show {filtered.length} Products
                       </button>
@@ -367,12 +362,10 @@ export function CatalogPage(): React.JSX.Element {
                 aria-expanded={sortOpen}
                 className="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-lg hover:bg-surface-container-highest transition-colors"
               >
-                <span className="font-label-sm text-label-sm text-on-surface font-bold">
+                <span className="font-label-caps text-label-caps text-on-surface font-bold">
                   {sortOptions.find((s) => s.id === sort)?.label}
                 </span>
-                <span className="material-symbols-outlined text-sm text-on-surface-variant">
-                  expand_more
-                </span>
+                <Icon name="expand_more" size={16} className="text-on-surface-variant" />
               </button>
 
               <AnimatePresence>
@@ -405,12 +398,7 @@ export function CatalogPage(): React.JSX.Element {
                         >
                           {option.label}
                           {sort === option.id ? (
-                            <span
-                              className="material-symbols-outlined text-primary"
-                              style={{ fontSize: 16 }}
-                            >
-                              check
-                            </span>
+                            <Icon name="check" size={16} className="text-primary" />
                           ) : null}
                         </button>
                       </li>
@@ -424,7 +412,7 @@ export function CatalogPage(): React.JSX.Element {
             <div className="h-6 w-px bg-outline-variant hidden sm:block" />
 
             {/* Product count */}
-            <span className="font-label-sm text-label-sm text-on-surface-variant hidden sm:block">
+            <span className="font-label-caps text-label-caps text-on-surface-variant hidden sm:block">
               {filtered.length} PRODUCTS
             </span>
           </div>
@@ -473,13 +461,9 @@ export function CatalogPage(): React.JSX.Element {
           secondaryProducts.length === 0 &&
           filtered.length > 0) ? null : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
-            <span className="material-symbols-outlined text-[28px] text-on-surface-variant">
-              search
-            </span>
-            <p className="font-body-lg text-body-lg text-on-surface">
-              No products match your filters
-            </p>
-            <p className="text-sm text-on-surface-variant">
+            <Icon name="search" size={28} className="text-on-surface-variant" />
+            <p className="font-body text-body-lg text-on-surface">No products match your filters</p>
+            <p className="font-body text-body-sm text-on-surface-variant">
               Try adjusting the search or filter criteria.
             </p>
             <button
@@ -488,7 +472,7 @@ export function CatalogPage(): React.JSX.Element {
                 setFilters(DEFAULT_FILTERS)
                 setQuery('')
               }}
-              className="mt-2 rounded-lg border border-outline-variant px-4 py-2 font-label-sm text-xs uppercase tracking-wider text-on-surface hover:bg-surface-container-high transition-colors"
+              className="mt-2 rounded-lg border border-outline-variant px-4 py-2 font-label-caps text-label-caps uppercase tracking-wider text-on-surface hover:bg-surface-container-high transition-colors"
             >
               Clear all filters
             </button>
@@ -520,16 +504,14 @@ export function CatalogPage(): React.JSX.Element {
               aria-label="Filters"
             >
               <div className="flex items-center justify-between border-b border-outline-variant px-5 py-4">
-                <h2 className="font-headline-lg text-lg font-bold text-on-surface">Filters</h2>
+                <h2 className="font-display text-headline-lg font-bold text-on-surface">Filters</h2>
                 <button
                   type="button"
                   onClick={() => setFilterOpen(false)}
                   aria-label="Close filters"
                   className="rounded p-1.5 text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-                    close
-                  </span>
+                  <Icon name="close" size={20} />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-5 py-5">
@@ -539,7 +521,7 @@ export function CatalogPage(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setFilterOpen(false)}
-                  className="w-full rounded-lg bg-on-surface py-3 font-label-sm text-label-sm uppercase tracking-wider text-surface font-bold"
+                  className="w-full rounded-lg bg-on-surface py-3 font-label-caps text-label-caps uppercase tracking-wider text-surface font-bold"
                 >
                   Show {filtered.length} Products
                 </button>

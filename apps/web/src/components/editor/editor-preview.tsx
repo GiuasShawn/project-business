@@ -1,8 +1,8 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import type React from 'react'
 import { catalogProducts } from '../../lib/catalog-data'
-import { Icon } from '../ui/icon'
 import type { StorefrontState } from './editor-sidebar'
 
 interface EditorPreviewProps {
@@ -65,7 +65,7 @@ export function EditorPreview({ state }: EditorPreviewProps): React.JSX.Element 
         <div className="flex min-h-[900px] w-full max-w-[1200px] flex-col border border-outline-variant bg-background shadow-2xl">
           {/* Mockup top nav */}
           <nav className="flex w-full items-center justify-between border-b border-outline-variant bg-surface px-grid-margin py-6">
-            <div className="font-display-lg-mobile uppercase tracking-tighter text-on-surface">
+            <div className="font-display text-display-lg-mobile uppercase tracking-tighter text-on-surface">
               {state.storeName}
             </div>
             <div className="flex gap-6 font-label-caps text-label-caps uppercase tracking-widest">
@@ -83,7 +83,7 @@ export function EditorPreview({ state }: EditorPreviewProps): React.JSX.Element 
           <div className="group relative h-[500px] overflow-hidden border-b border-outline-variant bg-surface-container-high">
             <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-lowest" />
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-background/80 to-transparent p-grid-margin">
-              <h2 className="max-w-2xl font-display-lg uppercase tracking-tighter text-on-surface">
+              <h2 className="max-w-2xl font-display text-display-lg uppercase tracking-tighter text-on-surface">
                 {state.featuredCollections[0] || 'FW24 Avant-Garde Collection'}
               </h2>
               <button
@@ -98,9 +98,7 @@ export function EditorPreview({ state }: EditorPreviewProps): React.JSX.Element 
           {/* Mockup product grid */}
           <div className="bg-background p-grid-margin">
             <div className="mb-8 flex items-end justify-between">
-              <h3 className="font-headline-md text-headline-md text-on-surface">
-                Curated Arrivals
-              </h3>
+              <h3 className="font-display text-headline-md text-on-surface">Curated Arrivals</h3>
               <span className="cursor-pointer border-b border-outline-variant pb-1 font-label-caps uppercase tracking-widest text-on-surface-variant transition-colors hover:text-on-surface">
                 View All
               </span>
@@ -119,10 +117,12 @@ export function EditorPreview({ state }: EditorPreviewProps): React.JSX.Element 
                   </div>
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-body-lg text-body-lg font-medium text-on-surface">
+                      <p className="font-body text-body-lg font-medium text-on-surface">
                         {product.name}
                       </p>
-                      <p className="mt-1 font-body-sm text-on-surface-variant">{product.brand}</p>
+                      <p className="mt-1 font-body text-body-sm text-on-surface-variant">
+                        {product.brand}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center gap-3">

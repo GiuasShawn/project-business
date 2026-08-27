@@ -71,10 +71,16 @@ const loomPreset = {
           '32px',
           { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '700' },
         ],
+        'headline-lg': [
+          '28px',
+          { lineHeight: '1.25', letterSpacing: '-0.02em', fontWeight: '600' },
+        ],
         'headline-md': ['24px', { lineHeight: '1.3', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'title-md': ['18px', { lineHeight: '1.4', letterSpacing: '-0.01em', fontWeight: '500' }],
         'body-lg': ['16px', { lineHeight: '1.6', letterSpacing: '-0.01em', fontWeight: '400' }],
         'body-sm': ['14px', { lineHeight: '1.5', letterSpacing: '0em', fontWeight: '400' }],
         'label-caps': ['11px', { lineHeight: '1.2', letterSpacing: '0.1em', fontWeight: '600' }],
+        'label-sm': ['10px', { lineHeight: '1.2', letterSpacing: '0.1em', fontWeight: '600' }],
         'data-mono': ['14px', { lineHeight: '1', letterSpacing: '-0.02em', fontWeight: '600' }],
       },
       spacing: {

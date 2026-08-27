@@ -44,6 +44,8 @@ export type IconName =
   | 'shopping_cart'
   | 'favorite'
   | 'favorite_border'
+  | 'bookmark'
+  | 'bookmark_border'
   | 'inventory_2'
   | 'category'
   | 'palette'

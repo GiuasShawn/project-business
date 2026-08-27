@@ -1,8 +1,7 @@
 'use client'
 
+import { Icon, Input } from '@loom/ui'
 import type React from 'react'
-import { Icon } from '../ui/icon'
-import { Input } from '../ui/input'
 import { EditorAccordion } from './editor-accordion'
 
 export interface StorefrontState {
@@ -37,7 +36,9 @@ export function EditorSidebar({ state, onChange }: EditorSidebarProps): React.JS
             <Icon name="store" size={24} className="text-on-surface-variant" />
           </div>
           <div>
-            <h1 className="font-headline-md tracking-tight text-primary">{state.storeName}</h1>
+            <h1 className="font-display text-headline-md tracking-tight text-primary">
+              {state.storeName}
+            </h1>
             <p className="mt-1 font-label-caps text-label-caps text-on-surface-variant">
               Premium Tier
             </p>

@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -54,32 +55,29 @@ export function ProductCard({
               transition={{ duration: 0.18, ease: EASE_OUT }}
               className="flex"
             >
-              <span
-                className={`material-symbols-outlined ${wishlisted ? 'text-tertiary' : ''}`}
-                style={{
-                  fontSize: 16,
-                  fontVariationSettings: wishlisted ? "'FILL' 1" : undefined,
-                }}
-              >
-                favorite
-              </span>
+              <Icon
+                name={wishlisted ? 'favorite' : 'favorite_border'}
+                size={16}
+                filled={wishlisted}
+                className={wishlisted ? 'text-tertiary' : ''}
+              />
             </motion.span>
           </button>
         </div>
 
         {/* Content */}
         <div className="flex flex-col flex-1 px-1">
-          <h3 className="font-headline-lg text-xl text-primary font-semibold mb-1">
+          <h3 className="font-display text-headline-lg text-primary font-semibold mb-1">
             {product.name}
           </h3>
-          <p className="font-title-md text-sm text-on-surface-variant mb-4">{product.brand}</p>
+          <p className="font-body text-body-sm text-on-surface-variant mb-4">{product.brand}</p>
 
           {/* Price + Commission row */}
           <div className="flex justify-between items-center mt-auto pt-4 border-t border-outline-variant/30">
-            <span className="font-headline-lg text-lg text-primary font-semibold">
+            <span className="font-data-mono text-title-md text-primary font-semibold">
               {formatINR(product.price)}
             </span>
-            <span className="font-label-sm text-xs text-on-surface-variant">
+            <span className="font-label-caps text-label-caps text-on-surface-variant">
               {product.commissionRate}% COMMISSION
             </span>
           </div>

@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import { useState } from 'react'
 import { type CatalogProduct, formatINR } from '../../lib/catalog-data'
 
@@ -54,7 +55,7 @@ export function ProductDetails({ product }: ProductDetailsProps): React.JSX.Elem
       </div>
 
       {/* Right: Product Details */}
-      <div className="lg:col-span-5 lg:sticky lg:top-24 h-fit flex flex-col gap-6 p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
+      <div className="lg:col-span-5 lg:sticky lg:top-24 h-fit flex flex-col gap-6 p-6 bg-surface-container-low rounded border border-outline-variant/10">
         {/* Title + Bookmark */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-start">
@@ -67,18 +68,13 @@ export function ProductDetails({ product }: ProductDetailsProps): React.JSX.Elem
               className="text-on-surface-variant hover:text-primary cursor-pointer transition-colors"
               aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
             >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontVariationSettings: isBookmarked ? "'FILL' 1" : undefined }}
-              >
-                bookmark_border
-              </span>
+              <Icon name="bookmark_border" filled={isBookmarked} />
             </button>
           </div>
 
           {/* Price + Commission */}
           <div className="flex items-center gap-4 mt-2">
-            <p className="font-title-md text-title-md text-primary">{formatINR(product.price)}</p>
+            <p className="font-body text-title-md text-primary">{formatINR(product.price)}</p>
             <span className="font-label-caps text-label-caps bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border border-outline-variant/20 tracking-widest">
               {product.commissionRate}% COMMISSION
             </span>
@@ -127,9 +123,7 @@ export function ProductDetails({ product }: ProductDetailsProps): React.JSX.Elem
           type="button"
           className="w-full py-4 bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-[0.1em] rounded hover:bg-inverse-surface transition-colors duration-300 flex items-center justify-center gap-2"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-            add
-          </span>
+          <Icon name="add" size={18} />
           CURATE TO CATALOG
         </button>
 
@@ -165,9 +159,11 @@ export function ProductDetails({ product }: ProductDetailsProps): React.JSX.Elem
             <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest group-hover:text-primary-container transition-colors">
               Shipping & Returns
             </span>
-            <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors">
-              expand_more
-            </span>
+            <Icon
+              name="expand_more"
+              size={20}
+              className="text-outline group-hover:text-primary transition-colors"
+            />
           </button>
           <button
             type="button"
@@ -176,9 +172,11 @@ export function ProductDetails({ product }: ProductDetailsProps): React.JSX.Elem
             <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest group-hover:text-primary-container transition-colors">
               Sustainability
             </span>
-            <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors">
-              expand_more
-            </span>
+            <Icon
+              name="expand_more"
+              size={20}
+              className="text-outline group-hover:text-primary transition-colors"
+            />
           </button>
         </div>
       </div>

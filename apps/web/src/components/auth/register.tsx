@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
@@ -176,7 +177,7 @@ export function RegisterPage(): React.JSX.Element {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary text-on-primary py-4 mt-8 font-title-md text-title-md hover:bg-primary-container transition-colors duration-300 disabled:opacity-50"
+              className="w-full bg-primary text-on-primary py-4 mt-8 font-body text-title-md hover:bg-primary-container transition-colors duration-300 disabled:opacity-50"
             >
               {isSubmitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
             </button>
@@ -195,14 +196,18 @@ export function RegisterPage(): React.JSX.Element {
           <div className="grid grid-cols-2 gap-4">
             <button
               type="button"
+              aria-label="Sign up with Google"
               className="flex items-center justify-center py-3 border border-surface-container-high hover:bg-surface-container-low transition-colors duration-300"
             >
+              <Icon name="person" size={20} className="text-primary mr-2" />
               <span className="font-label-caps text-label-caps text-primary">Google</span>
             </button>
             <button
               type="button"
+              aria-label="Sign up with Apple"
               className="flex items-center justify-center py-3 border border-surface-container-high hover:bg-surface-container-low transition-colors duration-300"
             >
+              <Icon name="person" size={20} className="text-primary mr-2" />
               <span className="font-label-caps text-label-caps text-primary">Apple</span>
             </button>
           </div>
@@ -213,7 +218,7 @@ export function RegisterPage(): React.JSX.Element {
               Already have an account?{' '}
               <Link
                 href="/sign-in"
-                className="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all ml-2 font-title-md"
+                className="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all ml-2 font-body"
               >
                 Sign In
               </Link>

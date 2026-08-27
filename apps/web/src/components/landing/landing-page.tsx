@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import Link from 'next/link'
 
 /**
@@ -68,7 +69,7 @@ export function LandingPage(): React.JSX.Element {
                 className="bg-surface-container text-primary px-8 py-3.5 rounded-lg font-medium hover:bg-surface-container-high transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
               >
                 Explore Catalog
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                <Icon name="arrow_forward" size={16} />
               </Link>
             </div>
 
@@ -86,7 +87,7 @@ export function LandingPage(): React.JSX.Element {
           </div>
 
           {/* Right image */}
-          <div className="relative w-full h-[500px] lg:h-[700px] rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative w-full h-[500px] lg:h-[700px] rounded overflow-hidden shadow-2xl">
             <img
               alt="Sophisticated black bodycon dress on a model in a minimalist studio setting"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTvwnTGV_XvlzytU0ReM6jlEok512waPW1j2Tx9-j8c7g0cYhA0TrPKY44GZ-PT2PIrugr-Er4Jg7ml2S3NO89y5rEPWrFf0XWk0_GPgxSVFfcdhD4l3sWyo4zFEPL6yw6PBlQBh4KBBJsp5HREwDjlfkiaCys4mouiV9yWBaQHlSqaNAwV25wEyB-P5w2-zTRM_UiHb57aHP7Jmajbqf_OE_FpPNXwqO_erEDdPjv2ZPzbszJM1ASRw"

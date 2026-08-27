@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@loom/ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
@@ -87,7 +88,7 @@ export function SignInPage(): React.JSX.Element {
 
           {/* Header */}
           <div className="w-full mb-10">
-            <h1 className="font-display text-headline md:text-display-lg text-primary mb-2">
+            <h1 className="font-display text-headline-md md:text-display-lg text-primary mb-2">
               Welcome Back
             </h1>
             <p className="font-body text-body-lg text-on-surface-variant">
@@ -103,9 +104,11 @@ export function SignInPage(): React.JSX.Element {
                 Email Address
               </label>
               <div className="flex items-center border-b border-surface-variant group-focus-within:border-primary transition-colors duration-300 pb-2">
-                <span className="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary mr-3 text-lg transition-colors">
-                  mail
-                </span>
+                <Icon
+                  name="mail"
+                  size={20}
+                  className="text-on-surface-variant group-focus-within:text-primary mr-3 transition-colors"
+                />
                 <input
                   id="email"
                   name="email"
@@ -126,9 +129,11 @@ export function SignInPage(): React.JSX.Element {
                 Password
               </label>
               <div className="flex items-center border-b border-surface-variant group-focus-within:border-primary transition-colors duration-300 pb-2">
-                <span className="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary mr-3 text-lg transition-colors">
-                  lock
-                </span>
+                <Icon
+                  name="lock"
+                  size={20}
+                  className="text-on-surface-variant group-focus-within:text-primary mr-3 transition-colors"
+                />
                 <input
                   id="password"
                   name="password"
@@ -185,16 +190,18 @@ export function SignInPage(): React.JSX.Element {
           <div className="w-full grid grid-cols-2 gap-4">
             <button
               type="button"
+              aria-label="Sign in with Google"
               className="flex justify-center items-center py-3 border border-surface-variant rounded-sm hover:border-primary hover:bg-surface-container-low transition-colors duration-200"
             >
-              <span className="material-symbols-outlined text-on-surface text-xl">person</span>
+              <Icon name="person" size={20} className="text-on-surface" />
               <span className="ml-2 font-label-caps text-label-caps">Google</span>
             </button>
             <button
               type="button"
+              aria-label="Sign in with Apple"
               className="flex justify-center items-center py-3 border border-surface-variant rounded-sm hover:border-primary hover:bg-surface-container-low transition-colors duration-200"
             >
-              <span className="material-symbols-outlined text-on-surface text-xl">devices</span>
+              <Icon name="person" size={20} className="text-on-surface" />
               <span className="ml-2 font-label-caps text-label-caps">Apple</span>
             </button>
           </div>
